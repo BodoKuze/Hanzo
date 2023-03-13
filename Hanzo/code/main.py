@@ -20,7 +20,7 @@ Ninja = Player(WIN,pyg.K_w,pyg.K_s,pyg.K_a,pyg.K_d,pyg.K_SPACE,pyg.K_KP_ENTER,50
 def main():
     clock = pygame.time.Clock()
     spielen = True
-    dt = 0
+    dt = 3
     dt_anim = 0
     while spielen:
         dt += 1
