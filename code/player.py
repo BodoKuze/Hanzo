@@ -62,7 +62,7 @@ class Player:
             "item_air" : [20,21]
         }
         
-        if not self.moving:
+        if not self.moving :
             img = actions_frames["idle"]
             self.image_counter = dt % len(img)
               
@@ -124,25 +124,25 @@ class Player:
         self.movement = [0,0]
 
 
-        if keys[self.control[2]]:
+        if keys[self.control[2]] and self.attack_cooldown == 0:
             
             self.movement[0] = -1
             self.moving = True
             self.flip = True
 
-        if keys[self.control[3]]:
+        if keys[self.control[3]] and self.attack_cooldown == 0:
             
             self.movement[0] = 1
             self.moving = True
             self.flip = False
 
 
-        if keys[self.control[0]]:
+        if keys[self.control[0]] and self.attack_cooldown == 0:
             
             self.movement[1] = -1
             self.moving = True
                 
-        if keys[self.control[1]]:
+        if keys[self.control[1]] and self.attack_cooldown == 0:
            
             self.movement[1] = 1
             self.moving = True
