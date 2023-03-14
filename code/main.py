@@ -6,7 +6,7 @@ import pygame
 
 pygame.font.init()
 pyg = pygame
-FONT = pygame.font.Font(fr"{os.getcwd()}\Hanzo\font\EndlessBossBattleRegular-v7Ey.ttf",30)
+FONT = pygame.font.Font(fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf",30)
 FPS = 60
 WIDTH = 800
 HEIGHT = 600
@@ -20,8 +20,7 @@ Ninja = Player(WIN,pyg.K_w,pyg.K_s,pyg.K_a,pyg.K_d,pyg.K_SPACE,pyg.K_KP_ENTER,50
 def main():
     clock = pygame.time.Clock()
     spielen = True
-    dt = 3
-    dt_anim = 0
+    dt = 0
     while spielen:
         dt += 1
         clock.tick(FPS)

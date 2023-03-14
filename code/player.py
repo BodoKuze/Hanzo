@@ -12,16 +12,18 @@ class Player:
         self.moving = False
         self.speed = 5
         self.dt = 0
-        self.image_list = Image_Pack(self.master,fr"{os.getcwd()}\Hanzo\sprites\char.png",5,5,(500,500)).get_images()
-        
+        self.image_list = Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,5,(500,500)).get_images()
+        self.gravity = 3
         self.frame_switch = 10
         self.sprites = []
         self.frame_counter = 0
         self.image_counter = 0
-
-
+        self.dt_falling = 0
+        self.attack = False
+        self.attack_duration = 3
+        self.attack_cooldown = 0
         self.time = 0
-        self.
+        self.dt_for_sword = 0
         self.Immunity_frames = 0
         self.flip = flipped
         self.in_air = False
@@ -29,7 +31,8 @@ class Player:
         self.items = None
         self.item_holding_counter = 0
         self.gravity = 0
-
+        self.animation_buffer = 0
+        self.falling = False
         self.movement = [0,0]
         
         
@@ -48,7 +51,7 @@ class Player:
         actions_frames = {
             "idle" : [0,1],
             "running" : [6,7,8],
-            "slash" : [2,3,4],
+            "slash" : [2,3,4,],
             "sub" : [2,5],
             "ducking" : [9],
             "d_slash" : [10,11,12],
@@ -62,21 +65,47 @@ class Player:
         if not self.moving:
             img = actions_frames["idle"]
             self.image_counter = dt % len(img)
-            
+              
         if self.moving:
             img = actions_frames["running"]
             self.image_counter = dt % len(img)
+            
         
+        if self.attack:
+            img = actions_frames["slash"]
+            if self.animation_buffer % 20 == 0:
+                self.image_counter = self.animation_buffer % len(img)
+            self.animation_buffer += 1
+            self.attack_duration -= 1
+
+            self.animation_buffer += 1
+        else:
+            self.animation_buffer = 0
         
-
-
 
         self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]], self.flip, False), (self.x, self.y))
         self.hit_box = pygame.Rect(self.x,self.y,50,50)
         pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
 
-    def sword_attack(self):
-        print("attack")
+    def sword_attack(self,active):
+        
+        if active and self.attack_cooldown == 0:
+            self.attack = True
+            self.attack_duration = 20
+            self.attack_cooldown = 30
+            self.speed = 2
+        elif self.attack_cooldown > 0:
+            self.attack_cooldown -= 1
+        else:
+            self.attack = False
+            self.speed = 5
+
+    def apply_garvity(self,dt):
+        if self.falling:
+            if dt % 10:
+                self.dt_falling += 0
+            self.y += 0
+            
 
 
 
@@ -118,10 +147,11 @@ class Player:
             self.movement[1] = 1
             self.moving = True
 
-        if keys[self.control[4]]:
-            if self.in_air == True:
-                self.sword_attack()
+        
             
+        self.sword_attack(keys[self.control[4]])
+        
+        print(self.attack)
 
         
 
