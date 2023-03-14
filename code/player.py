@@ -31,7 +31,7 @@ class Player:
         self.items = None
         self.item_holding_counter = 0
         self.gravity = 0
-        self.animation_buffer = 0
+        self.atk_buffer = 0
         self.falling = False
         self.movement = [0,0]
         
@@ -62,43 +62,50 @@ class Player:
             "item_air" : [20,21]
         }
         
-        if not self.moving :
+        if not self.moving and not self.attack:
             img = actions_frames["idle"]
             self.image_counter = dt % len(img)
               
-        if self.moving:
+        elif self.moving and not self.attack:
             img = actions_frames["running"]
             self.image_counter = dt % len(img)
             
         
-        if self.attack:
+        elif self.attack:
             img = actions_frames["slash"]
-            if self.animation_buffer % 20 == 0:
-                self.image_counter = self.animation_buffer % len(img)
-            self.animation_buffer += 1
-            self.attack_duration -= 1
-
-            self.animation_buffer += 1
-        else:
-            self.animation_buffer = 0
+            
         
 
         self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]], self.flip, False), (self.x, self.y))
         self.hit_box = pygame.Rect(self.x,self.y,50,50)
         pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
 
-    def sword_attack(self,active):
+    def sword_attack(self):
         
-        if active and self.attack_cooldown == 0:
-            self.attack = True
-            self.attack_duration = 20
-            self.attack_cooldown = 30
-            self.speed = 2
-        elif self.attack_cooldown > 0:
-            self.attack_cooldown -= 1
+        
+        if self.attack:
+            self.movement = [0,0]
+
+            if self.atk_buffer == 0:
+                self.image_counter = 0
+
+            self.atk_buffer += 1
+
+            if self.atk_buffer % 3 == 0 and self.atk_buffer < 9:
+                self.image_counter += 1
+
+            
+
+            if self.atk_buffer == 20:
+                self.attack = False
+                self.atk_buffer = 0
+
         else:
-            self.attack = False
-            self.speed = 5
+            self.atk_buffer = 0
+            
+
+        
+        
 
     def apply_garvity(self,dt):
         if self.falling:
@@ -147,11 +154,13 @@ class Player:
             self.movement[1] = 1
             self.moving = True
 
+        if keys[self.control[4]] and not self.attack :
+            self.attack = True
+            print("kk")
         
-            
-        self.sword_attack(keys[self.control[4]])
         
-        print(self.attack)
+        
+        
 
         
 
@@ -168,8 +177,8 @@ class Player:
 
         
         
-
-
+        
+        self.sword_attack()
         self.move(self.movement,list_objects)
         self.update_app(self.dt)
         self.update_player_holding()
