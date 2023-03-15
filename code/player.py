@@ -45,7 +45,7 @@ class Player:
             if self.item_holding_counter == 500:
                 self.items = None
                 self.item_holding_counter = 0
-    
+    #Bewegungen
     def update_app(self,dt):
         
         actions_frames = {
