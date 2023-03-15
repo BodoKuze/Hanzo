@@ -17,6 +17,7 @@ class Player:
         self.speed = 5
         self.dt = 0
         self.image_list = Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images()
+        self.collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         self.gravity = 3
         self.frame_switch = 10
         self.sprites = []
@@ -32,18 +33,18 @@ class Player:
         self.flip = flipped
         self.has_flipped = False
         self.in_air = False
-        self.hit_box = pygame.Rect(self.x,self.y,50,50)
+        self.hit_box = pygame.Rect(self.x,self.y,50,100)
         self.items = None
         self.item_holding_counter = 0
         
         self.atk_buffer = 0
 
         self.dgy = 0
-
+        self.on_ground = True
         self.jump_height = 20
         self.dj = 0
         self.djtime = 0
-        self.gravity = 4
+        self.gravity = 2
         self.falling = False
         self.jump = False
         self.movement = [0,0]
@@ -95,22 +96,27 @@ class Player:
         
         
         if self.flip:
-            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter+1]], self.flip, False), (self.x, self.y))
+            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]+1], self.flip, False), (self.x-50, self.y))
         else:
-            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter+1]], self.flip, False), (self.x, self.y))
-
+            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]+1], self.flip, False), (self.x+50, self.y))
+        
 
         pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
 
 
     def jumping(self):
+        
         if self.jump:
-            self.djtime += 1
+            if self.djtime == 0:
+                self.djtime += 0.75
+            else:
+                self.djtime += self.djtime*0.75
+                
             self.dj = self.hit_box.y
 
-            self.hit_box.y -= (self.gravity/2)*self.djtime
-
-
+            #self.hit_box.y -= self.jump_height - self.djtime
+        
+            self.movement[1] = -(self.jump_height - self.djtime)
 
             if self.dj - self.hit_box.y == self.jump_height:
                 self.jump = False
@@ -145,109 +151,64 @@ class Player:
 
         else:
             self.atk_buffer = 0
-            
+    
 
-        
-        
+    
 
-    def apply_gravity(self):
-        if not self.jump and self.y+100 <= 500:
-            self.dgy += 1
-            
-            #print((self.gravity/2)*self.dgy)
-            self.hit_box.y += (self.gravity/2)*self.dgy
-
-        else:
-            self.dgy = 0
-            
-
-
-
-    def update(self,dt,list_objects):
-        
+    
+    def update(self, dt, list_objects):
         if dt % self.frame_switch == 0:
-            self.dt +=1
-
+            self.dt += 1
 
         keys = pygame.key.get_pressed()
         self.moving = False
-        
-        
-        #Bewegungsrichtung
-        
-        self.movement = [0,0]
+        self.attack = False
+
+        # Bewegungsrichtung
+        self.movement = [0, self.gravity]
 
         if keys[self.control[0]] and self.attack_cooldown == 0:
-            
-            self.movement[1] = -1
-            self.moving = True
+            pass  # TODO: Türen Betreten
 
         elif keys[self.control[2]] and self.attack_cooldown == 0:
-            
-            self.movement[0] = -1
+            self.movement[0] = -1 * self.speed
             self.moving = True
             self.flip = True
 
         elif keys[self.control[3]] and self.attack_cooldown == 0:
-            
-            self.movement[0] = 1
+            self.movement[0] = 1 * self.speed
             self.moving = True
             self.flip = False
 
-
-        
-                
         elif keys[self.control[1]] and self.attack_cooldown == 0:
-           
-            self.movement[1] = 1
-            self.moving = True
-
-
-
-        if keys[self.control[5]] and not self.attack :
-            self.attack = True
+            pass  # TODO: Ducken
             
-        if keys[self.control[4]] and not self.attack :
+
+        if keys[self.control[5]] and not self.attack:
+            self.attack = True
+
+        if keys[self.control[4]] and not self.jump and self.collision_types['bottom']:
             self.jump = True
-        
-        
-        
-        
+            
 
-        
-
-
-        if 0 not in self.movement:
-            self.movement[0] = (self.movement[0]*self.speed)/(2**(1/2))
-            self.movement[1] = (self.movement[1]*self.speed)/(2**(1/2))
-        else:
-            self.movement[0]*=self.speed
-            self.movement[1]*=self.speed
-
-        
-        
-
-        
-        
-        
         self.sword_attack()
-        self.move(self.movement,list_objects)
+
+        self.collision_types = self.move(self.movement, list_objects)
+
         self.jumping()
-        self.apply_gravity()
-
-
 
         self.update_app(self.dt)
-        
+
         self.update_player_holding()
-        
-        
-    
+
+        self.x, self.y = self.hit_box.x, self.hit_box.y
+
+        pygame.draw.rect(self.master, (255, 255, 255), list_objects[0], 2)
 
 
-    
 
-    def if_collision(self,list_objects:list[pygame.Rect]):
+
+    def if_collision(self, list_objects: list[pygame.Rect]):
         hit_list = []
         if self.items != "inv":
             for tile in list_objects:
@@ -256,31 +217,34 @@ class Player:
         return hit_list
 
     def move(self, movement, tiles):
-        
         self.hit_box.x += movement[0]
         hit_list = self.if_collision(tiles)
         
 
+        self.jump = False
+
         for tile in hit_list:
             if movement[0] > 0:
                 self.hit_box.right = tile.left
-
+                self.collision_types['right'] = True
             elif movement[0] < 0:
                 self.hit_box.left = tile.right
+                self.collision_types['left'] = True
 
-        
         self.hit_box.y += movement[1]
-
-
         hit_list = self.if_collision(tiles)
-        
+
         for tile in hit_list:
             if movement[1] > 0:
                 self.hit_box.bottom = tile.top
-
+                self.collision_types['bottom'] = True
             elif movement[1] < 0:
                 self.hit_box.top = tile.bottom
+                self.collision_types['top'] = True
 
-        
-        
-        self.x, self.y = self.hit_box.x , self.hit_box.y
+        if self.collision_types['bottom']:
+            self.gravity = 0
+        else:
+            self.gravity = 5
+
+        return self.collision_types
