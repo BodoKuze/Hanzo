@@ -32,7 +32,7 @@ def main():
         
         WIN.fill((0, 0, 0))
 
-        Ninja.update(dt,[pygame.Rect(0,500,800,50),pygame.Rect(400,500,400,50)])
+        Ninja.update(dt,[pygame.Rect(0,500,800,50)],event)
         
         
         

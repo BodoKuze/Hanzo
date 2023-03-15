@@ -36,7 +36,8 @@ class Player:
         self.hit_box = pygame.Rect(self.x,self.y,50,100)
         self.items = None
         self.item_holding_counter = 0
-        
+        self.jumpleft = 0
+        self.max_jumps = 2
         self.atk_buffer = 0
 
         self.dgy = 0
@@ -44,11 +45,12 @@ class Player:
         self.jump_height = 20
         self.dj = 0
         self.djtime = 0
-        self.gravity = 2
+        self.gravity = 10
         self.falling = False
         self.jump = False
         self.movement = [0,0]
-        
+        self.jump_time = 3.5
+        self.jump_speed = 5
         
 
     def update_player_holding(self):
@@ -85,12 +87,19 @@ class Player:
             self.image_counter = dt % len(img)
             
         
-        elif self.attack:
+        elif self.attack and self.collision_types['bottom']:
             img = actions_frames["slash"]
-            
+        
+        elif self.attack and not self.collision_types['bottom']:
+            img = actions_frames["d_slash"] 
+
+        
+        if self.jumpleft == 2:
+            img = actions_frames["in_air"]
+
+
         
         
-            
         
         self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]], self.flip, False), (self.x, self.y))
         
@@ -101,41 +110,41 @@ class Player:
             self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]+1], self.flip, False), (self.x+50, self.y))
         
 
-        pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
+        #pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
 
 
     def jumping(self):
         
+        GRAVITY = 10
+
         if self.jump:
             if self.djtime == 0:
-                self.djtime += 0.75
+                self.jumpleft += 1
+                self.djtime = 1
             else:
-                self.djtime += self.djtime*0.75
+                self.djtime += 0.1
+
+            if self.djtime < self.jump_time:
                 
-            self.dj = self.hit_box.y
-
-            #self.hit_box.y -= self.jump_height - self.djtime
-        
-            self.movement[1] = -(self.jump_height - self.djtime)
-
-            if self.dj - self.hit_box.y == self.jump_height:
+                self.movement[1] = (self.jump_speed - GRAVITY * (self.jump_time-self.djtime))
+                
+            else:
                 self.jump = False
                 self.falling = True
-                self.djtime = 0
+                
+        else:
+            self.djtime = 0
             
-
-            
-    
-
 
 
     def sword_attack(self):
-        
-        
+
+    
         if self.attack:
-            self.movement = [0,0]
+            
 
             if self.atk_buffer == 0:
+                
                 self.image_counter = 0
 
             self.atk_buffer += 1
@@ -143,67 +152,84 @@ class Player:
             if self.atk_buffer % 3 == 0 and self.atk_buffer < 9:
                 self.image_counter += 1
 
-            
-
             if self.atk_buffer == 20:
                 self.attack = False
                 self.atk_buffer = 0
 
         else:
             self.atk_buffer = 0
-    
 
     
 
     
-    def update(self, dt, list_objects):
+
+    
+    def update(self, dt, list_objects,event):
         if dt % self.frame_switch == 0:
             self.dt += 1
 
         keys = pygame.key.get_pressed()
         self.moving = False
         self.attack = False
-
+        self.falling = False
+        print(self.jumpleft)
         # Bewegungsrichtung
         self.movement = [0, self.gravity]
 
         if keys[self.control[0]] and self.attack_cooldown == 0:
             pass  # TODO: Türen Betreten
 
-        elif keys[self.control[2]] and self.attack_cooldown == 0:
+        if keys[self.control[2]] and self.attack_cooldown == 0:
             self.movement[0] = -1 * self.speed
             self.moving = True
             self.flip = True
 
-        elif keys[self.control[3]] and self.attack_cooldown == 0:
+        if keys[self.control[3]] and self.attack_cooldown == 0:
             self.movement[0] = 1 * self.speed
             self.moving = True
             self.flip = False
 
-        elif keys[self.control[1]] and self.attack_cooldown == 0:
+        if keys[self.control[1]] and self.attack_cooldown == 0:
             pass  # TODO: Ducken
-            
 
         if keys[self.control[5]] and not self.attack:
             self.attack = True
 
-        if keys[self.control[4]] and not self.jump and self.collision_types['bottom']:
+        if keys[self.control[4]] and not self.jump and self.collision_types['bottom'] and self.jumpleft <= self.max_jumps:
             self.jump = True
-            
 
-        self.sword_attack()
+        
 
-        self.collision_types = self.move(self.movement, list_objects)
+
+        if not self.collision_types['bottom']:
+            self.falling = True
+            self.gravity += 0.5
+        
+
 
         self.jumping()
+        self.sword_attack()
+        self.collision_types = self.move(self.movement, list_objects)
+
+        if self.attack and not self.collision_types['bottom']:
+            self.movement[1] = self.gravity
 
         self.update_app(self.dt)
-
         self.update_player_holding()
+
+
+        if self.attack:
+            print(self.movement)
+
+
 
         self.x, self.y = self.hit_box.x, self.hit_box.y
 
-        pygame.draw.rect(self.master, (255, 255, 255), list_objects[0], 2)
+
+        for i in list_objects:
+            pygame.draw.rect(self.master, (255, 255, 255), i, 2)
+
+
 
 
 
@@ -220,7 +246,7 @@ class Player:
         self.hit_box.x += movement[0]
         hit_list = self.if_collision(tiles)
         
-
+        
         self.jump = False
 
         for tile in hit_list:
@@ -237,14 +263,14 @@ class Player:
         for tile in hit_list:
             if movement[1] > 0:
                 self.hit_box.bottom = tile.top
+                self.jumpleft = 0
                 self.collision_types['bottom'] = True
             elif movement[1] < 0:
                 self.hit_box.top = tile.bottom
                 self.collision_types['top'] = True
 
-        if self.collision_types['bottom']:
+        if self.collision_types['bottom'] and self.jump:
             self.gravity = 0
-        else:
-            self.gravity = 5
+        
 
         return self.collision_types
