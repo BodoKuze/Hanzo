@@ -8,10 +8,8 @@ class Player:
         self.control = [up,down,left,rigth,jump,attack]
         self.x = x
         self.y = y
-
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-
         self.player_size = 50
         self.moving = False
         self.speed = 5
@@ -39,7 +37,6 @@ class Player:
         self.jumpleft = 0
         self.max_jumps = 2
         self.atk_buffer = 0
-
         self.dgy = 0
         self.on_ground = True
         self.jump_height = 20
@@ -61,7 +58,7 @@ class Player:
             if self.item_holding_counter == 500:
                 self.items = None
                 self.item_holding_counter = 0
-    #Bewegungen
+    
     def update_app(self,dt):
         
         actions_frames = {
@@ -84,21 +81,18 @@ class Player:
               
         elif self.moving and not self.attack:
             img = actions_frames["running"]
-            self.image_counter = dt % len(img)
-            
+            self.image_counter = dt % len(img)    
         
         elif self.attack and self.collision_types['bottom']:
             img = actions_frames["slash"]
-        
-        elif self.attack and not self.collision_types['bottom']:
-            img = actions_frames["d_slash"] 
 
         
-        if self.jumpleft == 2:
+        if self.jumpleft in [1,2]:
             img = actions_frames["in_air"]
 
 
-        
+        if self.attack and self.jumpleft in [1,2]:
+            img = actions_frames["attack_air"] 
         
         
         self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]], self.flip, False), (self.x, self.y))
@@ -178,7 +172,7 @@ class Player:
 
         if keys[self.control[0]] and self.attack_cooldown == 0:
             pass  # TODO: Türen Betreten
-
+        
         if keys[self.control[2]] and self.attack_cooldown == 0:
             self.movement[0] = -1 * self.speed
             self.moving = True
@@ -191,8 +185,8 @@ class Player:
 
         if keys[self.control[1]] and self.attack_cooldown == 0:
             pass  # TODO: Ducken
-
-        if keys[self.control[5]] and not self.attack:
+        
+        if keys[self.control[5]] and not self.attack and self.attack_cooldown == 0:
             self.attack = True
 
         if keys[self.control[4]] and not self.jump and self.collision_types['bottom'] and self.jumpleft <= self.max_jumps:

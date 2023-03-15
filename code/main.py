@@ -8,8 +8,8 @@ pygame.font.init()
 pyg = pygame
 FONT = pygame.font.Font(fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf",30)
 FPS = 60
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1000
+HEIGHT = 800
 
 pygame.display.set_caption("Panic Run")
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
@@ -32,7 +32,7 @@ def main():
         
         WIN.fill((0, 0, 0))
 
-        Ninja.update(dt,[pygame.Rect(0,500,800,50)],event)
+        Ninja.update(dt,[pygame.Rect(0,500,800,50),pygame.Rect(300,200,200,50),pygame.Rect(0,200,200,50)],event)
         
         
         
