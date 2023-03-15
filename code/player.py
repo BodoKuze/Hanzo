@@ -8,11 +8,15 @@ class Player:
         self.control = [up,down,left,rigth,jump,attack]
         self.x = x
         self.y = y
+
+        self.x_when_flipped = x+ 50
+        self.y_when_flipped = y+ 50
+
         self.player_size = 50
         self.moving = False
         self.speed = 5
         self.dt = 0
-        self.image_list = Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,5,(500,500)).get_images()
+        self.image_list = Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images()
         self.gravity = 3
         self.frame_switch = 10
         self.sprites = []
@@ -26,13 +30,22 @@ class Player:
         self.dt_for_sword = 0
         self.Immunity_frames = 0
         self.flip = flipped
+        self.has_flipped = False
         self.in_air = False
         self.hit_box = pygame.Rect(self.x,self.y,50,50)
         self.items = None
         self.item_holding_counter = 0
-        self.gravity = 0
+        
         self.atk_buffer = 0
+
+        self.dgy = 0
+
+        self.jump_height = 20
+        self.dj = 0
+        self.djtime = 0
+        self.gravity = 4
         self.falling = False
+        self.jump = False
         self.movement = [0,0]
         
         
@@ -49,17 +62,17 @@ class Player:
     def update_app(self,dt):
         
         actions_frames = {
-            "idle" : [0,1],
-            "running" : [6,7,8],
-            "slash" : [2,3,4,],
-            "sub" : [2,5],
-            "ducking" : [9],
-            "d_slash" : [10,11,12],
-            "d_item" : [9,12],
-            "jump" : [17],
-            "in_air" : [13,14,15,16],
-            "attack_air" : [17,18,19],
-            "item_air" : [20,21]
+            "idle" : [0,2],
+            "running" : [12,14,16],
+            "slash" : [4,6,8,],
+            "sub" : [4,10],
+            "ducking" : [18],
+            "d_slash" : [20,22,24],
+            "d_item" : [18,24],
+            "jump" : [34],
+            "in_air" : [26,28,30,32],
+            "attack_air" : [34,36,38],
+            "item_air" : [40,42]
         }
         
         if not self.moving and not self.attack:
@@ -75,10 +88,40 @@ class Player:
             img = actions_frames["slash"]
             
         
-
+        
+            
+        
         self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]], self.flip, False), (self.x, self.y))
-        self.hit_box = pygame.Rect(self.x,self.y,50,50)
+        
+        
+        if self.flip:
+            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter+1]], self.flip, False), (self.x, self.y))
+        else:
+            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter+1]], self.flip, False), (self.x, self.y))
+
+
         pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
+
+
+    def jumping(self):
+        if self.jump:
+            self.djtime += 1
+            self.dj = self.hit_box.y
+
+            self.hit_box.y -= (self.gravity/2)*self.djtime
+
+
+
+            if self.dj - self.hit_box.y == self.jump_height:
+                self.jump = False
+                self.falling = True
+                self.djtime = 0
+            
+
+            
+    
+
+
 
     def sword_attack(self):
         
@@ -107,11 +150,15 @@ class Player:
         
         
 
-    def apply_garvity(self,dt):
-        if self.falling:
-            if dt % 10:
-                self.dt_falling += 0
-            self.y += 0
+    def apply_gravity(self):
+        if not self.jump and self.y+100 <= 500:
+            self.dgy += 1
+            
+            #print((self.gravity/2)*self.dgy)
+            self.hit_box.y += (self.gravity/2)*self.dgy
+
+        else:
+            self.dgy = 0
             
 
 
@@ -130,33 +177,38 @@ class Player:
         
         self.movement = [0,0]
 
+        if keys[self.control[0]] and self.attack_cooldown == 0:
+            
+            self.movement[1] = -1
+            self.moving = True
 
-        if keys[self.control[2]] and self.attack_cooldown == 0:
+        elif keys[self.control[2]] and self.attack_cooldown == 0:
             
             self.movement[0] = -1
             self.moving = True
             self.flip = True
 
-        if keys[self.control[3]] and self.attack_cooldown == 0:
+        elif keys[self.control[3]] and self.attack_cooldown == 0:
             
             self.movement[0] = 1
             self.moving = True
             self.flip = False
 
 
-        if keys[self.control[0]] and self.attack_cooldown == 0:
-            
-            self.movement[1] = -1
-            self.moving = True
+        
                 
-        if keys[self.control[1]] and self.attack_cooldown == 0:
+        elif keys[self.control[1]] and self.attack_cooldown == 0:
            
             self.movement[1] = 1
             self.moving = True
 
-        if keys[self.control[4]] and not self.attack :
+
+
+        if keys[self.control[5]] and not self.attack :
             self.attack = True
-            print("kk")
+            
+        if keys[self.control[4]] and not self.attack :
+            self.jump = True
         
         
         
@@ -180,7 +232,13 @@ class Player:
         
         self.sword_attack()
         self.move(self.movement,list_objects)
+        self.jumping()
+        self.apply_gravity()
+
+
+
         self.update_app(self.dt)
+        
         self.update_player_holding()
         
         
@@ -201,7 +259,7 @@ class Player:
         
         self.hit_box.x += movement[0]
         hit_list = self.if_collision(tiles)
-       
+        
 
         for tile in hit_list:
             if movement[0] > 0:
@@ -210,7 +268,9 @@ class Player:
             elif movement[0] < 0:
                 self.hit_box.left = tile.right
 
+        
         self.hit_box.y += movement[1]
+
 
         hit_list = self.if_collision(tiles)
         
@@ -221,5 +281,6 @@ class Player:
             elif movement[1] < 0:
                 self.hit_box.top = tile.bottom
 
-
-        self.x,self.y = self.hit_box.x,self.hit_box.y
+        
+        
+        self.x, self.y = self.hit_box.x , self.hit_box.y
