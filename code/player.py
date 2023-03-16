@@ -59,6 +59,10 @@ class Player:
                 self.items = None
                 self.item_holding_counter = 0
     
+    
+
+
+
     def update_app(self,dt):
         
         actions_frames = {
@@ -103,9 +107,22 @@ class Player:
         else:
             self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]+1], self.flip, False), (self.x+50, self.y))
         
+        print(self.flip)
 
-        #pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
+        if self.attack:
+            if not self.flip:
+                sword_hitbox = pygame.rect.Rect(self.hit_box.x+50,self.hit_box.y+10,50,30)
+            if self.flip:
+                sword_hitbox = pygame.rect.Rect(self.hit_box.x-50,self.hit_box.y+10,50,30)
 
+            pygame.draw.rect(self.master,(0,255,0),sword_hitbox,2)
+            
+        
+
+
+
+        pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
+        pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
 
     def jumping(self):
         
@@ -170,30 +187,33 @@ class Player:
         # Bewegungsrichtung
         self.movement = [0, self.gravity]
 
-        if keys[self.control[0]] and self.attack_cooldown == 0:
+        if keys[self.control[0]] and self.atk_buffer == 0:
             pass  # TODO: Türen Betreten
-        
-        if keys[self.control[2]] and self.attack_cooldown == 0:
+            
+        if keys[self.control[2]] and self.atk_buffer == 0:
             self.movement[0] = -1 * self.speed
             self.moving = True
             self.flip = True
 
-        if keys[self.control[3]] and self.attack_cooldown == 0:
+        if keys[self.control[3]] and self.atk_buffer == 0:
             self.movement[0] = 1 * self.speed
             self.moving = True
             self.flip = False
 
-        if keys[self.control[1]] and self.attack_cooldown == 0:
+        if keys[self.control[1]] and self.atk_buffer == 0:
             pass  # TODO: Ducken
         
         if keys[self.control[5]] and not self.attack and self.attack_cooldown == 0:
-            self.attack = True
 
-        if keys[self.control[4]] and not self.jump and self.collision_types['bottom'] and self.jumpleft <= self.max_jumps:
-            self.jump = True
+            self.attack = True
 
         
 
+
+
+
+        if keys[self.control[4]] and not self.jump and self.collision_types['bottom'] and self.jumpleft <= self.max_jumps:
+            self.jump = True
 
         if not self.collision_types['bottom']:
             self.falling = True
@@ -215,7 +235,7 @@ class Player:
         if self.attack:
             print(self.movement)
 
-
+        
 
         self.x, self.y = self.hit_box.x, self.hit_box.y
 
@@ -230,10 +250,9 @@ class Player:
 
     def if_collision(self, list_objects: list[pygame.Rect]):
         hit_list = []
-        if self.items != "inv":
-            for tile in list_objects:
-                if self.hit_box.colliderect(tile):
-                    hit_list.append(tile)
+        for tile in list_objects:
+            if self.hit_box.colliderect(tile):
+                hit_list.append(tile)
         return hit_list
 
     def move(self, movement, tiles):
