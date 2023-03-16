@@ -48,6 +48,7 @@ class Player:
         self.movement = [0,0]
         self.jump_time = 3.5
         self.jump_speed = 5
+        self.sword = None
         
 
     def update_player_holding(self):
@@ -109,17 +110,10 @@ class Player:
         
         print(self.flip)
 
-        if self.attack:
-            if not self.flip:
-                sword_hitbox = pygame.rect.Rect(self.hit_box.x+50,self.hit_box.y+10,50,30)
-            if self.flip:
-                sword_hitbox = pygame.rect.Rect(self.hit_box.x-50,self.hit_box.y+10,50,30)
-
-            pygame.draw.rect(self.master,(0,255,0),sword_hitbox,2)
+        
             
         
-
-
+        
 
         pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
         pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
@@ -167,12 +161,20 @@ class Player:
                 self.attack = False
                 self.atk_buffer = 0
 
+        
+
+
+        
+            if not self.flip:
+                self.sword = pygame.rect.Rect(self.hit_box.x+50,self.hit_box.y+10,50,30)
+            if self.flip:
+                self.sword = pygame.rect.Rect(self.hit_box.x-50,self.hit_box.y+10,50,30)
+
+            pygame.draw.rect(self.master,(0,255,0), self.sword,2)
+
         else:
             self.atk_buffer = 0
-
-    
-
-    
+            self.sword = None
 
     
     def update(self, dt, list_objects,event):
