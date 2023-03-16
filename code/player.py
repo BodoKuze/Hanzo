@@ -15,6 +15,9 @@ class Player:
         self.speed = 5
         self.dt = 0
         self.image_list = Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images()
+        self.shadow_image_list1 = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(0,0,50))
+        self.shadow_image_list2 = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(0,0,100))
+        self.shadow_image_list3 = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(0,0,150))
         self.collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         self.gravity = 3
         self.frame_switch = 10
@@ -31,7 +34,12 @@ class Player:
         self.flip = flipped
         self.has_flipped = False
         self.in_air = False
+
         self.hit_box = pygame.Rect(self.x,self.y,50,100)
+        self.shadow_hit_box1 = pygame.Rect(self.x,self.y,50,100)
+        self.shadow_hit_box2 = pygame.Rect(self.x,self.y,50,100)
+        self.shadow_hit_box3 = pygame.Rect(self.x,self.y,50,100)
+
         self.items = None
         self.item_holding_counter = 0
         self.jumpleft = 0
@@ -49,7 +57,48 @@ class Player:
         self.jump_time = 3.5
         self.jump_speed = 5
         self.sword = None
+        self.movement_list = [(self.x,self.y) for i in range(10)]
+
+
+
+    def update_movement_list(self):
         
+        
+        del self.movement_list[-1]
+        self.movement_list = [((self.hit_box.x,self.hit_box.y))] + self.movement_list
+
+
+
+    def update_alucard_sd(self):
+        
+        self.shadow_hit_box1.x,self.shadow_hit_box1.y = self.movement_list[3]
+        self.shadow_hit_box2.x,self.shadow_hit_box2.y = self.movement_list[2]
+        self.shadow_hit_box3.x,self.shadow_hit_box3.y = self.movement_list[1]
+
+
+
+
+    def create_shadow(self,image_list:list,color:tuple[int,int,int]):
+        new_image_list = []
+
+        copy_image_list = image_list
+        
+        for image in copy_image_list:
+            for x in range(image.get_width()):
+                for y in range(image.get_height()):
+                    r, g, b, a = image.get_at((x, y)) 
+                    
+                    new_r,new_g,new_b = color 
+                    
+                    
+                    image.set_at((x, y), (new_r, new_g, new_b, a))
+                    
+            new_image_list.append(image)
+
+
+        return new_image_list
+
+
 
     def update_player_holding(self):
         if self.items != None:
@@ -61,6 +110,17 @@ class Player:
                 self.item_holding_counter = 0
     
     
+    def blit_player(self,image_list,img,flip,x,y):
+        self.master.blit(pygame.transform.flip(image_list[img[self.image_counter]], flip, False), (x, y))
+        
+        
+        if self.flip:
+            self.master.blit(pygame.transform.flip(image_list[img[self.image_counter]+1], flip, False), (x-50, y))
+        else:
+            self.master.blit(pygame.transform.flip(image_list[img[self.image_counter]+1], flip, False), (x+50, y))
+
+
+
 
 
 
@@ -100,23 +160,22 @@ class Player:
             img = actions_frames["attack_air"] 
         
         
-        self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]], self.flip, False), (self.x, self.y))
-        
-        
-        if self.flip:
-            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]+1], self.flip, False), (self.x-50, self.y))
-        else:
-            self.master.blit(pygame.transform.flip(self.image_list[img[self.image_counter]+1], self.flip, False), (self.x+50, self.y))
-        
-        print(self.flip)
 
-        
-            
-        
+        self.blit_player(self.shadow_image_list1,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y)
+        self.blit_player(self.shadow_image_list2,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y)
+        self.blit_player(self.shadow_image_list3,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y)
+        self.blit_player(self.image_list,img,self.flip,self.x,self.y)
         
 
-        pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
-        pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
+
+
+        #print(self.flip)
+
+        
+        
+
+        #pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
+        pygame.draw.rect(self.master,(0,0,0),self.hit_box,2)
 
     def jumping(self):
         
@@ -146,8 +205,6 @@ class Player:
 
     
         if self.attack:
-            
-
             if self.atk_buffer == 0:
                 
                 self.image_counter = 0
@@ -161,10 +218,7 @@ class Player:
                 self.attack = False
                 self.atk_buffer = 0
 
-        
 
-
-        
             if not self.flip:
                 self.sword = pygame.rect.Rect(self.hit_box.x+50,self.hit_box.y+10,50,30)
             if self.flip:
@@ -185,7 +239,7 @@ class Player:
         self.moving = False
         self.attack = False
         self.falling = False
-        print(self.jumpleft)
+        
         # Bewegungsrichtung
         self.movement = [0, self.gravity]
 
@@ -232,10 +286,9 @@ class Player:
 
         self.update_app(self.dt)
         self.update_player_holding()
-
-
-        if self.attack:
-            print(self.movement)
+        self.update_movement_list()
+        self.update_alucard_sd()
+        
 
         
 
@@ -243,7 +296,7 @@ class Player:
 
 
         for i in list_objects:
-            pygame.draw.rect(self.master, (255, 255, 255), i, 2)
+            pygame.draw.rect(self.master, (0, 0, 0), i, 2)
 
 
 

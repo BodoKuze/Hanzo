@@ -21,6 +21,7 @@ def main():
     clock = pygame.time.Clock()
     spielen = True
     dt = 0
+
     while spielen:
         dt += 1
         clock.tick(FPS)
@@ -30,7 +31,7 @@ def main():
                 spielen = False
 
         
-        WIN.fill((0, 0, 0))
+        WIN.fill((140, 140, 140))
 
         Ninja.update(dt,[pygame.Rect(0,500,800,50),pygame.Rect(300,200,200,50),pygame.Rect(0,200,200,50)],event)
         
