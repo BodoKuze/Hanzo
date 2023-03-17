@@ -1,6 +1,8 @@
 import pygame
 import os
-from png_class import *
+from png_class import Image_Pack
+
+
 
 class Player:
     def __init__(self,master,up,down,left,rigth,jump,attack,x,y,flipped=False) -> None:
@@ -10,7 +12,7 @@ class Player:
         self.y = y
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-        self.player_size = 50
+        self.player_size = (100,50)
         self.moving = False
         self.speed = 5
         self.dt = 0
@@ -231,9 +233,11 @@ class Player:
             self.sword = None
 
     
-    def update(self, dt, list_objects,event):
+    def update(self, dt, list_objects, list_enteties ,event):
         if dt % self.frame_switch == 0:
             self.dt += 1
+
+        
 
         keys = pygame.key.get_pressed()
         self.moving = False
@@ -263,17 +267,13 @@ class Player:
 
             self.attack = True
 
-        
-
-
-
-
         if keys[self.control[4]] and not self.jump and self.collision_types['bottom'] and self.jumpleft <= self.max_jumps:
             self.jump = True
 
         if not self.collision_types['bottom']:
             self.falling = True
             self.gravity += 0.5
+        
         
 
 
@@ -295,19 +295,23 @@ class Player:
         self.x, self.y = self.hit_box.x, self.hit_box.y
 
 
-        for i in list_objects:
-            pygame.draw.rect(self.master, (0, 0, 0), i, 2)
+        
 
 
 
 
 
 
-    def if_collision(self, list_objects: list[pygame.Rect]):
+    def if_collision(self, list_objects: list):
         hit_list = []
+        
         for tile in list_objects:
-            if self.hit_box.colliderect(tile):
-                hit_list.append(tile)
+            if tile.hit_box == None:
+                pass
+            elif self.hit_box.colliderect(tile.hit_box):
+                hit_list.append(tile.hit_box)
+            
+                
         return hit_list
 
     def move(self, movement, tiles):

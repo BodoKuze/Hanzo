@@ -1,7 +1,5 @@
 import pygame
 
-import pygame
-
 class Image_Pack:
     def __init__(self,master:pygame.display, path, rows, columns, resize=None):
         self.path = path

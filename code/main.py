@@ -1,21 +1,19 @@
-from player import * 
-from png_class import Image_Pack
 import os
-from random import randint
 import pygame
+from main_game import Game
 
 pygame.font.init()
 pyg = pygame
 FONT = pygame.font.Font(fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf",30)
 FPS = 60
-WIDTH = 1000
+WIDTH = 800
 HEIGHT = 800
 
-pygame.display.set_caption("Panic Run")
+pygame.display.set_caption("Hanzo")
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 
 
-Ninja = Player(WIN,pyg.K_w,pyg.K_s,pyg.K_a,pyg.K_d,pyg.K_SPACE,pyg.K_k,50,50) 
+game = Game(WIN,HEIGHT,WIDTH)
 
 def main():
     clock = pygame.time.Clock()
@@ -33,8 +31,8 @@ def main():
         
         WIN.fill((140, 140, 140))
 
-        Ninja.update(dt,[pygame.Rect(0,500,800,50),pygame.Rect(300,200,200,50),pygame.Rect(0,200,200,50)],event)
         
+        game.update_main(event)
         
         
 
