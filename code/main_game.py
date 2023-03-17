@@ -13,7 +13,7 @@ class Game:
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,50,50)   
         self.delta_time = 0
         self.enemy_hitbox_list = []
-        self.platforms_hit_box_list = [Building(master,0,500,800,50,None,None),Building(master,300,200,200,50,None,None),penetrable_Platform(master,0,200,200,50,None,None)]
+        self.platforms_hit_box_list = [Construction(master,0,500,800,50,None,None),destroy_Plattform(master,300,200,200,50,None,None,1,5),penetrable_Platform(master,0,200,200,50,None,None)]
 
     def update_main(self,e):
         self.delta_time += 1

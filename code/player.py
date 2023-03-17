@@ -293,13 +293,7 @@ class Player:
         
 
         self.x, self.y = self.hit_box.x, self.hit_box.y
-
-
         
-
-
-
-
 
 
     def if_collision(self, list_objects: list):
