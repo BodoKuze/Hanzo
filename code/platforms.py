@@ -82,7 +82,7 @@ class movable_Platform(Construction):
     def update_app(self):
         return super().update_app()
     
-class destroy_Plattform(Construction):
+class destroy_Platform(Construction):
     
 
     def __init__(self, master, x, y, width, height, PNG: Image_Pack, set_image: list[int],sec:int,rec:int) -> None:
