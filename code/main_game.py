@@ -1,6 +1,7 @@
 #Hier kommt später die Hauptklasse rein in der 
 #alle Objekte miteinader interagieren
 import pygame
+import os
 from player import Player
 from platforms import *
 
@@ -13,7 +14,11 @@ class Game:
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,50,50)   
         self.delta_time = 0
         self.enemy_hitbox_list = []
-        self.platforms_hit_box_list = [Construction(master,0,500,800,50,None,None),movable_Platform(master,300,200,200,50,None,None,3,2),penetrable_Platform(master,0,200,200,50,None,None)]
+        a = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
+        b = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
+        self.platforms_hit_box_list = [Construction(master,0,10,40,1,a,[0]*16),movable_Platform(master,4,4,4,1,a,[5]*4,4,2),penetrable_Platform(master,0,4,4,1,a,[7]*4),destroy_Platform(master,12,4,4,1,b,[3]*4,1,3)]
+
+
 
     def update_main(self,e):
         self.delta_time += 1

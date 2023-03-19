@@ -8,14 +8,24 @@ from png_class import Image_Pack
 
 class Construction:
 
-    def __init__(self,master,x,y,width,height,PNG:Image_Pack,set_image:list[int]) -> None:
-        self.hit_box = pygame.rect.Rect(x,y,width,height)
+    def __init__(self,master,x,y,width,height,PNG:list,set_image:list[int]) -> None:
+        self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
         self.master = master
+        self.PNG = PNG
+        self.set_image = set_image
 
     def update(self,Player:Player):
         self.update_app()
         
     def update_app(self):
+        
+        for i,j in enumerate(self.set_image):
+            self.master.blit(self.PNG[j], (self.hit_box.x + i*50, self.hit_box.y))
+
+
+
+
+
         pygame.draw.rect(self.master,(0,0,0),self.hit_box,2)
 
     def get_hit_box(self):
@@ -23,9 +33,9 @@ class Construction:
 
 class penetrable_Platform(Construction):
 
-    def __init__(self, master, x, y, width, height, PNG: Image_Pack,set_image) -> None:
+    def __init__(self, master, x, y, width, height, PNG: list,set_image) -> None:
         super().__init__(master, x, y, width, height, PNG, set_image)
-        self.__hit_box = pygame.rect.Rect(x,y,width,height)
+        self.__hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
         self.hit_box = self.__hit_box
         self.going_trough = False
 
@@ -43,19 +53,30 @@ class penetrable_Platform(Construction):
         
 
     def update_app(self):
+
+        
+        for i,j in enumerate(self.set_image):
+            self.master.blit(self.PNG[j], (self.__hit_box.x + i*50, self.__hit_box.y))
+
+
+
         if self.going_trough:
             pygame.draw.rect(self.master,(255,255,255),self.__hit_box,2)
         if not self.going_trough:
             pygame.draw.rect(self.master,(0,0,0),self.__hit_box,2)    
-    
+
+
+
+
+
     def get_hit_box(self):
         return self.hit_box
     
 class movable_Platform(Construction):
 
-    def __init__(self, master, x, y, width, height, PNG: Image_Pack, set_image: list[int],distance_blocks:int,speed:int):
+    def __init__(self, master, x, y, width, height, PNG: list, set_image: list[int],distance_blocks:int,speed:int):
         super().__init__(master, x, y, width, height, PNG, set_image)
-        self.__x = x
+        self.__x = x*50
         
         self.distance_blocks = distance_blocks
         self.speed = speed
@@ -67,7 +88,7 @@ class movable_Platform(Construction):
          
         self.hit_box.x += self.speed
 
-        if self.__x + self.distance_blocks * 50 == self.hit_box.x:
+        if self.__x + self.distance_blocks*50  == self.hit_box.x:
             self.speed *= -1
 
 
@@ -85,11 +106,11 @@ class movable_Platform(Construction):
 class destroy_Platform(Construction):
     
 
-    def __init__(self, master, x, y, width, height, PNG: Image_Pack, set_image: list[int],sec:int,rec:int) -> None:
+    def __init__(self, master, x, y, width, height, PNG: list, set_image: list[int],sec:int,rec:int) -> None:
         super().__init__(master, x, y, width, height, PNG, set_image)
         
         
-        self.__hit_box = pygame.rect.Rect(x,y,width,height)
+        self.__hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
         self.hit_box = self.__hit_box
         self.hbc = 0
         self.__time = sec * 60
@@ -103,11 +124,40 @@ class destroy_Platform(Construction):
 
 
     def update_app(self):
+
+        image = 0
+        block_blit = True
+
+        if self.time == self.__time:
+            image = 0
+
+        elif self.time >= self.__time * (3/4):
+            image = 1
+
+        elif self.time >= self.__time * (2/4):
+            image = 2
+        
+        elif self.time >= self.__time * (1/4):
+            image = 3
+        
+        else:
+            image = 4
+
+        print(self.time)
+
+
+        if block_blit:
+            for i,j in enumerate(self.set_image):
+                self.master.blit(self.PNG[image], (self.__hit_box.x + i*50, self.__hit_box.y))
+
         if self.hbc >= 255:
             self.hbc = 255
 
         pygame.draw.rect(self.master,(round(self.hbc),round(self.hbc),round(self.hbc)),self.__hit_box,2)
-        
+
+
+
+
             
     def if_standing_on(self,hit_box:pygame.rect.Rect):
         if self.__hit_box.y == hit_box.y + hit_box.height and self.__hit_box.x <= hit_box.x <= self.__hit_box.x + self.__hit_box.width:

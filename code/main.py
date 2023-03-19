@@ -19,7 +19,7 @@ def main():
     clock = pygame.time.Clock()
     spielen = True
     dt = 0
-    
+
     while spielen:
         dt += 1
         clock.tick(FPS)
