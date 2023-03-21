@@ -233,7 +233,7 @@ class Player:
             self.sword = None
 
     
-    def update(self, dt, list_objects, list_enteties ,event):
+    def update(self, dt, list_objects, list_enteties ,event, ):
         if dt % self.frame_switch == 0:
             self.dt += 1
 
@@ -293,6 +293,7 @@ class Player:
         
 
         self.x, self.y = self.hit_box.x, self.hit_box.y
+        
         
 
 

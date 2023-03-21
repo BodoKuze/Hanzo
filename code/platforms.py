@@ -2,7 +2,7 @@ import pygame
 from player import Player
 from png_class import Image_Pack
 
-
+from camera import Camera
 
 
 
@@ -14,16 +14,15 @@ class Construction:
         self.PNG = PNG
         self.set_image = set_image
 
-    def update(self,Player:Player):
+    def update(self,Player:Player,cam:Camera):
+        self.hit_box = cam.apply(self.hit_box)
         self.update_app()
+
         
     def update_app(self):
         
         for i,j in enumerate(self.set_image):
             self.master.blit(self.PNG[j], (self.hit_box.x + i*50, self.hit_box.y))
-
-
-
 
 
         pygame.draw.rect(self.master,(0,0,0),self.hit_box,2)
@@ -35,18 +34,19 @@ class penetrable_Platform(Construction):
 
     def __init__(self, master, x, y, width, height, PNG: list,set_image) -> None:
         super().__init__(master, x, y, width, height, PNG, set_image)
-        self.__hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
-        self.hit_box = self.__hit_box
+        self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
+        self.height = height
         self.going_trough = False
 
-    def update(self,Player:Player):
-        
-        if Player.hit_box.y+Player.player_size[0]-1 > self.__hit_box.y:
+    def update(self,Player:Player,cam):
+        cam.apply(self.hit_box)
+
+        if Player.hit_box.y+Player.player_size[0]-1 > self.hit_box.y:
             self.going_trough = True
-            self.hit_box = None
+            self.hit_box.height = 0
 
         else:
-            self.hit_box = self.__hit_box
+            self.hit_box.height = 50
             self.going_trough = False
 
         self.update_app()
@@ -56,14 +56,14 @@ class penetrable_Platform(Construction):
 
         
         for i,j in enumerate(self.set_image):
-            self.master.blit(self.PNG[j], (self.__hit_box.x + i*50, self.__hit_box.y))
+            self.master.blit(self.PNG[j], (self.hit_box.x + i*50, self.hit_box.y))
 
 
 
         if self.going_trough:
-            pygame.draw.rect(self.master,(255,255,255),self.__hit_box,2)
+            pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
         if not self.going_trough:
-            pygame.draw.rect(self.master,(0,0,0),self.__hit_box,2)    
+            pygame.draw.rect(self.master,(0,0,0),self.hit_box,2)    
 
 
 
@@ -82,10 +82,11 @@ class movable_Platform(Construction):
         self.speed = speed
 
     def player_movement(self,hit_box:pygame.rect.Rect):
-        return self.hit_box.y == hit_box.y + hit_box.height and self.hit_box.x <= hit_box.x <= self.hit_box.x + self.hit_box.width
+        return self.hit_box.y == hit_box.y + hit_box.height and self.hit_box.x - hit_box.width <= hit_box.x <= self.hit_box.x + self.hit_box.width + hit_box.width
 
-    def update(self, Player: Player):
-         
+    def update(self, Player: Player,cam:Camera):
+        
+        cam.apply(self.hit_box)
         self.hit_box.x += self.speed
 
         if self.__x + self.distance_blocks*50  == self.hit_box.x:
@@ -110,18 +111,18 @@ class destroy_Platform(Construction):
         super().__init__(master, x, y, width, height, PNG, set_image)
         
         
-        self.__hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
-        self.hit_box = self.__hit_box
+        self.height = height
+        self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
         self.hbc = 0
         self.__time = sec * 60
         self.time = self.__time
         self.__recover_time = rec
         self.touched = False
 
-    def update(self, Player: Player):
+    def update(self, Player: Player,cam):
+        cam.apply(self.hit_box)
         self.if_standing_on(Player.hit_box)
         self.update_app()
-
 
     def update_app(self):
 
@@ -143,38 +144,35 @@ class destroy_Platform(Construction):
         else:
             image = 4
 
-        print(self.time)
-
-
         if block_blit:
             for i,j in enumerate(self.set_image):
-                self.master.blit(self.PNG[image], (self.__hit_box.x + i*50, self.__hit_box.y))
+                self.master.blit(self.PNG[image], (self.hit_box.x + i*50, self.hit_box.y))
 
         if self.hbc >= 255:
             self.hbc = 255
 
-        pygame.draw.rect(self.master,(round(self.hbc),round(self.hbc),round(self.hbc)),self.__hit_box,2)
+        pygame.draw.rect(self.master,(round(self.hbc),round(self.hbc),round(self.hbc)),self.hit_box,2)
 
 
 
 
             
     def if_standing_on(self,hit_box:pygame.rect.Rect):
-        if self.__hit_box.y == hit_box.y + hit_box.height and self.__hit_box.x <= hit_box.x <= self.__hit_box.x + self.__hit_box.width:
+        if self.hit_box.y == hit_box.y+hit_box.height and self.hit_box.x - hit_box.width <= hit_box.x <= self.hit_box.x + self.hit_box.width + hit_box.width:
             self.touched = True
 
 
         if self.touched:
             self.time -= 1
             self.hbc += (255)/(self.__time)
-            
+
             if self.time == 0:
-                self.hit_box = None
+                self.hit_box.height = 0
 
             elif self.time <= self.__recover_time * -60:
                 self.touched = False
                 self.time = self.__time
-                self.hit_box = self.__hit_box
+                self.hit_box.height = 50
                 self.hbc = 0
 
 

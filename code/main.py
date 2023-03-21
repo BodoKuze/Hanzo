@@ -28,14 +28,10 @@ def main():
             if event.type == pygame.QUIT:
                 spielen = False
 
-        
         WIN.fill((140, 140, 140))
-
         
         game.update_main(event)
         
-        
-
         pygame.display.flip()
     pygame.quit()
 
