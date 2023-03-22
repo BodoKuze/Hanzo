@@ -1,7 +1,7 @@
 import pygame
 import os
 from png_class import Image_Pack
-
+from camera import Camera
 
 
 class Player:
@@ -126,7 +126,7 @@ class Player:
 
 
 
-    def update_app(self,dt):
+    def update_app(self,dt,cam):
         
         actions_frames = {
             "idle" : [0,2],
@@ -233,7 +233,7 @@ class Player:
             self.sword = None
 
     
-    def update(self, dt, list_objects, list_enteties ,event, ):
+    def update(self, dt, list_objects, list_enteties ,event, cam:Camera):
         if dt % self.frame_switch == 0:
             self.dt += 1
 
@@ -279,12 +279,12 @@ class Player:
 
         self.jumping()
         self.sword_attack()
-        self.collision_types = self.move(self.movement, list_objects)
-
+        self.collision_types = self.move(self.hit_box,self.movement, list_objects)
+        
         if self.attack and not self.collision_types['bottom']:
             self.movement[1] = self.gravity
 
-        self.update_app(self.dt)
+        self.update_app(self.dt,cam)
         self.update_player_holding()
         self.update_movement_list()
         self.update_alucard_sd()
@@ -294,23 +294,24 @@ class Player:
 
         self.x, self.y = self.hit_box.x, self.hit_box.y
         
-        
+    def cam_applied(self,cam,hit_box):
+        x = hit_box.x - cam.camera.x
+        y = hit_box.y - cam.camera.y
+        return pygame.rect.Rect(x,y,hit_box.width,hit_box.height)
 
 
     def if_collision(self, list_objects: list):
         hit_list = []
         
         for tile in list_objects:
-            if tile.hit_box == None:
-                pass
-            elif self.hit_box.colliderect(tile.hit_box):
-                hit_list.append(tile.hit_box)
+            if self.hit_box.colliderect(tile.moved_hit_box):
+                hit_list.append(tile.moved_hit_box)
             
                 
         return hit_list
 
-    def move(self, movement, tiles):
-        self.hit_box.x += movement[0]
+    def move(self,hit_box, movement, tiles):
+        hit_box.x += movement[0]
         hit_list = self.if_collision(tiles)
         
         
@@ -318,22 +319,22 @@ class Player:
 
         for tile in hit_list:
             if movement[0] > 0:
-                self.hit_box.right = tile.left
+                hit_box.right = tile.left
                 self.collision_types['right'] = True
             elif movement[0] < 0:
-                self.hit_box.left = tile.right
+                hit_box.left = tile.right
                 self.collision_types['left'] = True
 
-        self.hit_box.y += movement[1]
+        hit_box.y += movement[1]
         hit_list = self.if_collision(tiles)
 
         for tile in hit_list:
             if movement[1] > 0:
-                self.hit_box.bottom = tile.top
+                hit_box.bottom = tile.top
                 self.jumpleft = 0
                 self.collision_types['bottom'] = True
             elif movement[1] < 0:
-                self.hit_box.top = tile.bottom
+                hit_box.top = tile.bottom
                 self.collision_types['top'] = True
 
         if self.collision_types['bottom'] and self.jump:

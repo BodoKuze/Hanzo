@@ -13,7 +13,7 @@ pygame.display.set_caption("Hanzo")
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 
 
-game = Game(WIN,HEIGHT,WIDTH)
+game = Game(WIN,WIDTH,HEIGHT)
 
 def main():
     clock = pygame.time.Clock()

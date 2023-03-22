@@ -8,28 +8,29 @@ from camera import Camera
 
 class Construction:
 
-    def __init__(self,master,x,y,width,height,PNG:list,set_image:list[int]) -> None:
+    def __init__(self,master,x,y,width,height,PNG:list,set_image:list[int],cam:Camera) -> None:
         self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
+        self.moved_hit_box = cam.apply(self.hit_box)
         self.master = master
         self.PNG = PNG
         self.set_image = set_image
+        
 
     def update(self,Player:Player,cam:Camera):
-        self.hit_box = cam.apply(self.hit_box)
-        self.update_app()
-
+        self.moved_hit_box = cam.apply(self.hit_box)
+        self.update_app(cam)
         
-    def update_app(self):
+        
+    def update_app(self,cam):
         
         for i,j in enumerate(self.set_image):
-            self.master.blit(self.PNG[j], (self.hit_box.x + i*50, self.hit_box.y))
+            self.master.blit(self.PNG[j], (self.moved_hit_box.x + i*50, self.moved_hit_box.y))
 
 
-        pygame.draw.rect(self.master,(0,0,0),self.hit_box,2)
+        pygame.draw.rect(self.master,(0,0,0),self.moved_hit_box,2)
 
-    def get_hit_box(self):
-        return self.hit_box
-
+    
+        
 class penetrable_Platform(Construction):
 
     def __init__(self, master, x, y, width, height, PNG: list,set_image) -> None:

@@ -5,20 +5,17 @@ class Camera:
         self.camera = pygame.Rect(0, 0, width, height)
         self.width = width
         self.height = height
-    
+
     def apply(self, entity_rect:pygame.rect.Rect):
-        return entity_rect.move(self.camera.topleft)
+        return pygame.rect.Rect(entity_rect.x-self.camera.x,entity_rect.y-self.camera.y,entity_rect.width,entity_rect.height)
 
-    def update(self, player_rect:pygame.rect.Rect):
-        x = -player_rect.x + int(self.width / 2)
-        y = -player_rect.y + int(self.height / 2)
-
-        # Limit camera scrolling to game world size
-        x = min(0, x)  # Left
-        y = min(0, y)  # Top
-        x = max(-(self.width - self.width), x)  # Right
-        y = max(-(self.height - self.height), y)  # Bottom
+    def update(self, player_rect:pygame.rect.Rect,dt):
         
-        self.camera = pygame.Rect(x, y, self.width, self.height)
+        
+        
+        
+        self.camera.x += (player_rect.x-self.camera.x-(self.width//2))//10
+        
+        
 
     
