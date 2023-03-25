@@ -42,35 +42,6 @@ player_rect = pygame.Rect(100,100,5,13)
 
 background_objects = [[0.25,[120,10,70,400]],[0.25,[280,30,40,400]],[0.5,[30,40,40,400]],[0.5,[130,90,100,400]],[0.5,[300,80,120,400]]]
 
-def collision_test(rect,tiles):
-    hit_list = []
-    for tile in tiles:
-        if rect.colliderect(tile):
-            hit_list.append(tile)
-    return hit_list
-
-def move(rect,movement,tiles):
-    collision_types = {'top':False,'bottom':False,'right':False,'left':False}
-    rect.x += movement[0]
-    hit_list = collision_test(rect,tiles)
-    for tile in hit_list:
-        if movement[0] > 0:
-            rect.right = tile.left
-            collision_types['right'] = True
-        elif movement[0] < 0:
-            rect.left = tile.right
-            collision_types['left'] = True
-    rect.y += movement[1]
-    hit_list = collision_test(rect,tiles)
-    for tile in hit_list:
-        if movement[1] > 0:
-            rect.bottom = tile.top
-            collision_types['bottom'] = True
-        elif movement[1] < 0:
-            rect.top = tile.bottom
-            collision_types['top'] = True
-    return rect, collision_types
-
 while True: # game loop
     display.fill((146,244,255)) # clear screen by filling it with blue
 
@@ -89,7 +60,7 @@ while True: # game loop
             pygame.draw.rect(display,(14,222,150),obj_rect)
         else:
             pygame.draw.rect(display,(9,91,85),obj_rect)
-
+    
     tile_rects = []
     y = 0
     for layer in game_map:
@@ -115,7 +86,7 @@ while True: # game loop
         vertical_momentum = 3
 
     player_rect,collisions = move(player_rect,player_movement,tile_rects)
-
+    
     if collisions['bottom'] == True:
         air_timer = 0
         vertical_momentum = 0

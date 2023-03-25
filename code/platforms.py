@@ -2,34 +2,30 @@ import pygame
 from player import Player
 from png_class import Image_Pack
 
-from camera import Camera
+
 
 
 
 class Construction:
 
-    def __init__(self,master,x,y,width,height,PNG:list,set_image:list[int],cam:Camera) -> None:
+    def __init__(self,master,x,y,width,height,PNG:list,set_image:list[int]) -> None:
         self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
-        self.moved_hit_box = cam.apply(self.hit_box)
         self.master = master
         self.PNG = PNG
         self.set_image = set_image
         
 
-    def update(self,Player:Player,cam:Camera):
-        self.moved_hit_box = cam.apply(self.hit_box)
-        self.update_app(cam)
+    def update(self,Player:Player,scroll:list[int,int]):
+        self.update_app(scroll) 
         
         
-    def update_app(self,cam):
+    def update_app(self,scroll):
         
         for i,j in enumerate(self.set_image):
-            self.master.blit(self.PNG[j], (self.moved_hit_box.x + i*50, self.moved_hit_box.y))
+            self.master.blit(self.PNG[j], ((self.hit_box.x + i*50)-scroll[0], (self.hit_box.y)-scroll[1]))
+            
 
-
-        pygame.draw.rect(self.master,(0,0,0),self.moved_hit_box,2)
-
-    
+        pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0],self.hit_box.y-scroll[1],self.hit_box.width,self.hit_box.height),2)
         
 class penetrable_Platform(Construction):
 
@@ -39,8 +35,8 @@ class penetrable_Platform(Construction):
         self.height = height
         self.going_trough = False
 
-    def update(self,Player:Player,cam):
-        cam.apply(self.hit_box)
+    def update(self,Player:Player,):
+        
 
         if Player.hit_box.y+Player.player_size[0]-1 > self.hit_box.y:
             self.going_trough = True
@@ -85,9 +81,9 @@ class movable_Platform(Construction):
     def player_movement(self,hit_box:pygame.rect.Rect):
         return self.hit_box.y == hit_box.y + hit_box.height and self.hit_box.x - hit_box.width <= hit_box.x <= self.hit_box.x + self.hit_box.width + hit_box.width
 
-    def update(self, Player: Player,cam:Camera):
+    def update(self, Player: Player):
         
-        cam.apply(self.hit_box)
+        
         self.hit_box.x += self.speed
 
         if self.__x + self.distance_blocks*50  == self.hit_box.x:
@@ -120,8 +116,8 @@ class destroy_Platform(Construction):
         self.__recover_time = rec
         self.touched = False
 
-    def update(self, Player: Player,cam):
-        cam.apply(self.hit_box)
+    def update(self, Player: Player):
+        
         self.if_standing_on(Player.hit_box)
         self.update_app()
 
