@@ -4,20 +4,24 @@ import pygame
 import os
 from player import Player
 from platforms import *
-
+from background import Background
 
 class Game:
     def __init__(self,master,width,height) -> None:
         self.master = master
         self.width = width
         self.height = height
-        self.scroll = None
+        self.scroll = [0,0]
         self.p = pygame
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,100,100)   
         self.delta_time = 0
         self.enemy_hitbox_list = []
+
+        self.bg = Background(master)
+
         a = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
         b = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
+        
         self.platforms_hit_box_list = [
             Construction(master,0,10,8,1,a,[0]*8),
             movable_Platform(master,8,10,3,1,a,[2]*3,8,2),
@@ -28,10 +32,13 @@ class Game:
             destroy_Platform(master,-3,10,3,1,b,[0]*3,1,4),
             ]
 
-
+    def update_bg(self):
+        self.bg.update(self.scroll)
 
     def update_main(self,e):
         self.delta_time += 1
+        self.update_bg()
+
 
         self.update_enteties(self.delta_time,e)
 

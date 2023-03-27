@@ -51,7 +51,7 @@ class Player:
         self.dj = 0
         self.djtime = 0
         self.gravity = 10
-
+        self.ducking = False
         self.air_timer = 0
         self.jump_hold = False
         self.vertical_mv = 0
@@ -244,6 +244,7 @@ class Player:
         self.moving = False
         self.attack = False
         self.falling = False
+        self.ducking = False
         
         # Bewegungsrichtung
         self.movement = [0, 0]
@@ -262,10 +263,10 @@ class Player:
             self.flip = False
 
         if keys[self.control[1]] and self.atk_buffer == 0:
-            pass  # TODO: SUBWEAPON
+            self.ducking = True
         
         if keys[self.control[5]] and not self.attack and self.attack_cooldown == 0:
-            
+  
             self.attack = True
         
         if keys[self.control[4]] and self.collision_types['bottom']:
@@ -275,16 +276,12 @@ class Player:
         if not keys[self.control[4]]:
             self.jump_hold = False
 
-        
-
 
         self.movement[1] += self.vertical_mv
         self.vertical_mv += self.gravity
 
         if self.vertical_mv > 12:
             self.vertical_mv = 12
-
-
 
         self.collision_types,self.hit_box = self.move(self.hit_box,self.movement, list_objects)
         
@@ -293,7 +290,9 @@ class Player:
             self.air_timer = 0
             self.vertical_mv = 0
         
-
+        if self.hit_box.y >= 2000:
+            self.hit_box.y = 0
+            self.hit_box.x = 50
         
         
 
