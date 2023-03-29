@@ -5,9 +5,11 @@ import os
 from player import Player
 from platforms import *
 from background import Background
+from label import Text
 
 class Game:
     def __init__(self,master,width,height) -> None:
+        self.font_path = fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf"
         self.master = master
         self.width = width
         self.height = height
@@ -17,7 +19,7 @@ class Game:
         self.delta_time = 0
         self.enemy_hitbox_list = []
         self.bg = Background(master)
-
+        self.text = Text(master,self.font_path,30,"60",0,0,100,50,(0,0,0))
         a = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
         b = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
         
@@ -41,6 +43,8 @@ class Game:
         self.update_enteties(e)
 
         self.platform_update()
+
+        self.update_label(clock)
         
     def update_enteties(self,e):
         self.scroll = self.player.update(self.delta_time,self.platforms_hit_box_list,None,e)
@@ -49,3 +53,8 @@ class Game:
         
         for i in self.platforms_hit_box_list:
             i.update(self.player,self.scroll)
+
+    def update_label(self,clock):
+        
+        self.text.update_text(round(clock.get_fps()),(255,255,255))
+        self.text.update()
