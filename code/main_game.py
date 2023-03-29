@@ -44,7 +44,7 @@ class Game:
         
     def update_enteties(self,e):
         self.scroll = self.player.update(self.delta_time,self.platforms_hit_box_list,None,e)
-
+        
     def platform_update(self):
         
         for i in self.platforms_hit_box_list:
