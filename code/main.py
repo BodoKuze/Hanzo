@@ -19,8 +19,6 @@ def main():
     spielen = True
     dt = 0
 
-    
-
     while spielen:
         dt += 1
         clock.tick(FPS)
@@ -29,7 +27,7 @@ def main():
             if event.type == pygame.QUIT:
                 spielen = False
         
-        game.update_main(event)
+        game.update_main(event,clock)
         
         pygame.display.flip()
     pygame.quit()

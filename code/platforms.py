@@ -37,7 +37,7 @@ class penetrable_Platform(Construction):
     def update(self,Player:Player,scroll:list[int,int]):
         
 
-        if (Player.hit_box.y+Player.player_size[1]-1 > self.hit_box.y) or (Player.ducking):
+        if (Player.hit_box.y+Player.hit_box.height-1 > self.hit_box.y) or (Player.ducking):
             self.going_trough = True
             self.hit_box.height = 0
 

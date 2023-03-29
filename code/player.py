@@ -10,7 +10,7 @@ class Player:
         self.control = [up,down,left,rigth,jump,attack]
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-        self.player_size = (50,100)
+        
         self.moving = False
         self.speed = 5
         self.dt = 0
@@ -21,18 +21,14 @@ class Player:
         self.collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         
         self.frame_switch = 10
-        self.sprites = []
-        self.frame_counter = 0
         self.image_counter = 0
         self.dt_falling = 0
         self.attack = False
         self.attack_duration = 3
         self.attack_cooldown = 0
-        self.time = 0
         self.dt_for_sword = 0
         self.Immunity_frames = 0
         self.flip = flipped
-        self.has_flipped = False
         self.in_air = False
 
         self.hit_box = pygame.Rect(x,y,50,100)
@@ -40,16 +36,15 @@ class Player:
         self.shadow_hit_box2 = pygame.Rect(x,y,50,100)
         self.shadow_hit_box3 = pygame.Rect(x,y,50,100)
 
-        self.items = None
-        self.item_holding_counter = 0
-        self.jumpleft = 0
-        self.max_jumps = 2
+
+        
+        
         self.atk_buffer = 0
         self.dgy = 0
-        self.on_ground = True
-        self.jump_height = 20
-        self.dj = 0
-        self.djtime = 0
+        
+        self.jump_height = 16
+        
+       
         self.gravity = 10
         self.ducking = False
         self.air_timer = 0
@@ -58,8 +53,7 @@ class Player:
         self.falling = False
         self.jump = False
         self.movement = [0,0]
-        self.jump_time = 3.5
-        self.jump_speed = 5
+
         self.sword = None
         self.movement_list = [(x,y) for i in range(10)]
         self.true_scroll = [0,0]
@@ -101,17 +95,6 @@ class Player:
 
 
         return new_image_list
-
-
-
-    def update_player_holding(self):
-        if self.items != None:
-            
-            self.item_holding_counter += 1
-
-            if self.item_holding_counter == 500:
-                self.items = None
-                self.item_holding_counter = 0
     
     
     def blit_player(self,image_list,img,flip,x,y,scroll):
@@ -181,7 +164,7 @@ class Player:
         
 
         #pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
-        pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.player_size[0],self.player_size[1]),2)
+        pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
 
 
     def sword_attack(self,scroll):
@@ -215,11 +198,11 @@ class Player:
     
     def jumping(self):
         if self.jump_hold:
-            if self.air_timer <= 16:
+            if self.air_timer <= self.jump_height:
                 self.vertical_mv = -12
                 self.air_timer += 1
             
-            if self.air_timer > 16:
+            if self.air_timer > self.jump_height:
                 self.jump = False
 
 
@@ -297,7 +280,6 @@ class Player:
         
 
         self.update_app(self.dt,scroll)
-        self.update_player_holding()
         self.update_movement_list()
         self.update_alucard_sd()
         self.sword_attack(scroll)
@@ -340,7 +322,6 @@ class Player:
         for tile in hit_list:
             if movement[1] > 0:
                 hit_box.bottom = tile.top
-                self.jumpleft = 0
                 collision_types['bottom'] = True
             elif movement[1] < 0:
                 hit_box.top = tile.bottom

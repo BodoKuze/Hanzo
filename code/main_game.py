@@ -34,7 +34,7 @@ class Game:
     def update_bg(self):
         self.bg.update(self.scroll,self.delta_time)
 
-    def update_main(self,e):
+    def update_main(self,e,clock):
         self.delta_time += 1
         self.update_bg()
 
