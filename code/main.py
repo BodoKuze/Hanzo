@@ -19,15 +19,15 @@ def main():
     spielen = True
     dt = 0
 
+    
+
     while spielen:
         dt += 1
         clock.tick(FPS)
-        #print(clock.get_fps())
+        print(clock.get_fps())
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 spielen = False
-
-        WIN.fill((140, 140, 140))
         
         game.update_main(event)
         

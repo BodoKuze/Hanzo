@@ -16,7 +16,6 @@ class Game:
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,100,100)   
         self.delta_time = 0
         self.enemy_hitbox_list = []
-
         self.bg = Background(master)
 
         a = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
@@ -33,21 +32,18 @@ class Game:
             ]
 
     def update_bg(self):
-        self.bg.update(self.scroll)
+        self.bg.update(self.scroll,self.delta_time)
 
     def update_main(self,e):
         self.delta_time += 1
         self.update_bg()
 
-
-        self.update_enteties(self.delta_time,e)
+        self.update_enteties(e)
 
         self.platform_update()
-            
-    def update_enteties(self,dt,e):
+        
+    def update_enteties(self,e):
         self.scroll = self.player.update(self.delta_time,self.platforms_hit_box_list,None,e)
-
-
 
     def platform_update(self):
         
