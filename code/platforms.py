@@ -37,7 +37,7 @@ class penetrable_Platform(Construction):
     def update(self,Player:Player,scroll:list[int,int]):
         
 
-        if Player.hit_box.y+Player.player_size[1]-1 > self.hit_box.y:
+        if (Player.hit_box.y+Player.hit_box.height-1 > self.hit_box.y) or (Player.ducking):
             self.going_trough = True
             self.hit_box.height = 0
 
@@ -142,8 +142,6 @@ class destroy_Platform(Construction):
 
         if self.hbc >= 255:
             self.hbc = 255
-
-        print(self.time)
         
         pygame.draw.rect(self.master,(round(self.hbc),round(self.hbc),round(self.hbc)),pygame.rect.Rect(self.hit_box.x-scroll[0],self.hit_box.y-scroll[1],self.hit_box.width,self.hit_box.height),2)    
         
