@@ -4,6 +4,8 @@ import pygame
 import os
 from player import Player
 from platforms import *
+from enemy import Enemy
+
 from background import Background
 from label import Text
 
@@ -17,7 +19,7 @@ class Game:
         self.p = pygame
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,100,100)   
         self.delta_time = 0
-        self.enemy_hitbox_list = []
+        self.enemy_hitbox_list = [Enemy(master,30,0)]
         self.bg = Background(master)
         self.text = Text(master,self.font_path,30,"60",0,0,100,50,(0,0,0))
         a = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
@@ -48,7 +50,8 @@ class Game:
         
     def update_enteties(self,e):
         self.scroll = self.player.update(self.delta_time,self.platforms_hit_box_list,None,e)
-        
+        #for i in self.enemy_hitbox_list:
+        #    i.update(self.delta_time)        
     def platform_update(self):
         
         for i in self.platforms_hit_box_list:
