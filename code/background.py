@@ -10,7 +10,11 @@ class Background:
         self.master = master
         self.delta_scroll_const = 0.025
         self.dt = 0
-        self.cloud_value_list = [{"i":randint(1,3)*-1, "x":randint(0,400),"y":randint(0,400),"s":1/randint(6,10)} for i in range(4)]
+        self.cloud_value_list = [
+        {"i":-1, "x":randint(0,400),"y":randint(0,400),"s":1/randint(6,10)},
+        {"i":-2, "x":randint(0,400),"y":randint(0,400),"s":1/randint(6,10)},
+
+        ]
 
         
 
