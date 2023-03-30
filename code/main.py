@@ -27,7 +27,7 @@ def main():
             if event.type == pygame.QUIT:
                 spielen = False
         
-        game.update_main(event,clock)
+        game.update_elias(event,clock)
         
         pygame.display.flip()
     pygame.quit()

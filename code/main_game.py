@@ -38,7 +38,17 @@ class Game:
     def update_bg(self):
         self.bg.update(self.scroll,self.delta_time)
 
-    def update_main(self,e,clock):
+    def update_elias(self,e,clock):
+        self.delta_time += 1
+        self.update_bg()
+
+        self.update_enteties(e)
+
+        self.platform_update()
+
+        self.update_label(clock)
+
+    def update_andre(self,e,clock):
         self.delta_time += 1
         self.update_bg()
 
