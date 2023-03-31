@@ -3,8 +3,10 @@ import pygame
 from main_game import Game
 
 pygame.font.init()
+
 pyg = pygame
 FONT = pygame.font.Font(fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf",30)
+
 FPS = 60
 WIDTH = 800
 HEIGHT = 800

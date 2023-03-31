@@ -33,6 +33,7 @@ class Game:
             penetrable_Platform(master,20,4,3,1,a,[7]*3),
             penetrable_Platform(master,20,1,3,1,a,[7]*3),
             destroy_Platform(master,-3,10,3,1,b,[0]*3,1,4),
+            Construction(master,-100,10,97,1,a,[0]*97),
             ]
 
     def update_bg(self):
