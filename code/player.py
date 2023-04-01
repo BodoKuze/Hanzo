@@ -2,7 +2,7 @@ import pygame
 import os
 from png_class import Image_Pack
 from pygame.locals import *
-
+from label import Player_IF
 
 class Player:
     def __init__(self,master,up,down,left,rigth,jump,attack,x:int,y:int,flipped=False) -> None:
@@ -36,7 +36,7 @@ class Player:
         self.shadow_hit_box2 = pygame.Rect(x,y,50,100)
         self.shadow_hit_box3 = pygame.Rect(x,y,50,100)
 
-
+        self.player_if = Player_IF(master)
         
         
         self.atk_buffer = 0
@@ -58,6 +58,10 @@ class Player:
         self.movement_list = [(x,y) for i in range(10)]
         self.true_scroll = [0,0]
 
+
+        self.hp = 10
+        self.mp = 10
+        self.subweapon = 3
 
     def update_movement_list(self):
         

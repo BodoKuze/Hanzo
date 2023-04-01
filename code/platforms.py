@@ -22,7 +22,8 @@ class Construction:
     def update_app(self,scroll):
         
         for i,j in enumerate(self.set_image):
-            self.master.blit(self.PNG[j], ((self.hit_box.x + i*50)-scroll[0], (self.hit_box.y)-scroll[1]))
+            if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
+                self.master.blit(self.PNG[j], ((self.hit_box.x + i*50)-scroll[0], (self.hit_box.y)-scroll[1]))
 
         pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0],self.hit_box.y-scroll[1],self.hit_box.width,self.hit_box.height),2)
         
@@ -52,7 +53,8 @@ class penetrable_Platform(Construction):
 
         
         for i,j in enumerate(self.set_image):
-            self.master.blit(self.PNG[j], (self.hit_box.x-scroll[0] + i*50, self.hit_box.y-scroll[1]))
+            if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
+                self.master.blit(self.PNG[j], (self.hit_box.x-scroll[0] + i*50, self.hit_box.y-scroll[1]))
 
 
 
