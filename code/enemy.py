@@ -27,11 +27,13 @@ class Bat:
 
         if self.hit_box.x > 800:
             self.hit_box.x = -500
+
+        self.curve()
     
 
     def update_app(self,scroll):
-        self.master.blit(pygame.transform.flip(self.image_list[self.dt % 3], self.flip, False), (self.hit_box.x-scroll[0], self.curve(self.hit_box.x)-scroll[1]))
+        self.master.blit(pygame.transform.flip(self.image_list[self.dt % 3], self.flip, False), (self.hit_box.x-scroll[0], self.hit_box.y-scroll[1]))
+        pygame.draw.rect(self.master,(255,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
 
-
-    def curve(self,x):
-        return self.y + sin(x/50)*150
+    def curve(self):
+        self.hit_box.y = self.y + sin(self.hit_box.x/50)*150

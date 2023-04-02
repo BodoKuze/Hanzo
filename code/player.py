@@ -158,16 +158,7 @@ class Player:
         self.blit_player(self.shadow_image_list2,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
         self.blit_player(self.shadow_image_list3,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
         self.blit_player(self.image_list,img,self.flip,self.hit_box.x,self.hit_box.y,scroll)
-        
 
-
-
-        
-
-        
-        
-
-        #pygame.draw.rect(self.master,(255,255,255),self.hit_box,2)
         pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
 
 
