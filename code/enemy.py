@@ -25,8 +25,8 @@ class Bat:
 
         self.hit_box.x += self.spd
 
-        if self.hit_box.x > 800:
-            self.hit_box.x = -500
+        if self.hit_box.x-scroll[0] > 800:
+            self.hit_box.x = -100  + scroll[0]
 
         self.curve()
     
