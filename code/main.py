@@ -17,16 +17,18 @@ game = Game(WIN,WIDTH,HEIGHT)
 
 def main():
     clock = pygame.time.Clock()
-    spielen = True
+    playing = True
     dt = 0
 
-    while spielen:
+    while playing:
         dt += 1
         clock.tick(FPS)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                spielen = False
+                playing = False
+        
+
         
         game.update_elias(event,clock)
         

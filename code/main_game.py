@@ -23,7 +23,8 @@ class Game:
         self.text = Text(master,self.font_path,30,"60",0,0,100,50,(0,0,0))
         a = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
         b = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
-        
+        self.test_time = 0 
+
         self.platform_list = [
             Construction(master,0,10,8,1,a,[0]*8),
             movable_Platform(master,8,10,3,1,a,[2]*3,8,2),
@@ -54,7 +55,15 @@ class Game:
 
         self.platform_update()
 
-        
+        keys = pygame.key.get_pressed()
+        if keys[ pygame.K_h]:
+            self.test_time += 1
+            if self.test_time >= 240:
+                self.test_time = 0
+        if keys[ pygame.K_g]:
+            print(self.bg.moon_hit_box.x)
+
+        self.bg.day_time = self.test_time // 10
 
         self.update_fg(clock,self.player)
 
