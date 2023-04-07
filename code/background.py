@@ -26,13 +26,17 @@ class Background:
         self.asset_2 = Image_Pack(master,fr"{os.getcwd()}\sprites\sunset_assets.png",3,3,(300,300)).get_images()
         self.asset_3 = Image_Pack(master,fr"{os.getcwd()}\sprites\day_assets.png",3,3,(300,300)).get_images()
         self.asset_main = self.asset_1
+        self.montains = Image_Pack(master,fr"{os.getcwd()}\sprites\background_montains.png",3,1,(1000,600)).get_images()
         
+        self.evening = False
+        self.day = False
         self.night = False
+
         
         self.sun_hit_box =pygame.rect.Rect(0,0,100,100)
         
         self.master = master
-        self.delta_scroll_const = 0.025
+        self.delta_scroll_const = 0.000025
         self.dt = 1
         self.y_puffer = 200
         self.cloud_value_list = [
@@ -45,15 +49,16 @@ class Background:
         self.star_list = [Star(master,randint(0,800),randint(0,800),randint(20,100)) for i in range(60)]
 
         self.day_time = 0
-        time = self.time_minimization([0,4,8,12,16,20],self.day_time)
+        time = self.time_minimization([0,4,8,12,19,21],self.day_time)
         self.background_color_per_time = {
             0:[0, 0, 0],
-            6:[255,145,102],
+            6:[255,135,92],
             8:[77,166,255],
             12:[77,166,255],
-            18:[255,145,102],
-            20:[0, 0, 0],
+            19:[255,135,102],
+            21:[0, 0, 0],
         }
+        self.montains_asset = 0
         self.bg_color = self.background_color_per_time[time]
 
     def time_minimization(self, nums: list[int], zahl: int) -> int:
@@ -80,29 +85,24 @@ class Background:
     def update(self,scroll,dt):
 
 
-        self.day_time = datetime.now().hour
+        self.day_time = 10
         
         if dt % 10 == 0:
             self.dt += 1
 
         self.time_cycle(scroll)
-        
+        self.background_obj(scroll)
         
         
         self.update_cloud(scroll)
 
-        
-        
-
-
-    
 
     def curve_s(self,x):
-        return (((x-350))**(2))/175 + 210
+        return (((x-350))**(2))/160 + 135
 
 
     def check_background_color(self):
-        time = self.time_minimization([0,6,8,12,18,20],self.day_time)
+        time = self.time_minimization([0,6,8,12,19,21],self.day_time)
 
         if self.dt % 2 == 0:  
             
@@ -114,25 +114,37 @@ class Background:
                     elif j > self.background_color_per_time[time][i]:
                         self.bg_color[i] -= 1
 
+       
+    def background_obj(self,scroll):
 
-                
-   
-            
+        self.master.blit(pygame.transform.flip(self.montains[self.montains_asset],False, False), (-100-scroll[0]*0.009, (200)+self.y_puffer))
+        if self.evening:
+            pygame.draw.rect(self.master,[230,125,82],pygame.rect.Rect(0,400+self.y_puffer,800,400))
+        if self.day:
+            pygame.draw.rect(self.master,[57,146,255],pygame.rect.Rect(0,400+self.y_puffer,800,400))
 
 
     def time_cycle(self,scroll):
         
-        if 8 < self.day_time < 18:
-            self.night = False
-        else:
+        if self.day_time in [6,7,19,20]:
+            self.evening = True
+            self.montains_asset = 1
+            self.asset_main = self.asset_2
+
+        elif  self.day_time in [21,22,23,0,1,2,3,4,5]:
             self.night = True
+            self.montains_asset = 2
+            self.asset_main = self.asset_1
+        
+        else:
+            self.day = True
+            self.montains_asset = 0
+            self.asset_main = self.asset_3
+        
         
         if self.day_time >= 24:
             self.day_time = 0
-        
-
-
-        
+               
         self.master.fill(self.bg_color)
         
         self.check_background_color()
@@ -142,15 +154,17 @@ class Background:
             for i in self.star_list:
                 i.update(self.dt)
 
-        self.sun_hit_box.x = (self.day_time*50)-300
-        
-        if self.time_minimization([0,6,8,12,18,20],self.day_time) in [6,18]:
-            self.asset_main = self.asset_2
-            self.master.blit(pygame.transform.flip(self.asset_2[self.dt % 5],False, False), (self.sun_hit_box.x-scroll[0]*self.delta_scroll_const, (self.curve_s(self.sun_hit_box.x) -scroll[1]*self.delta_scroll_const)))
+
+        if not self.night:
+
+            self.sun_hit_box.x = round(((self.day_time)*(500/14))+100-(3000/14))
         else:
-            self.master.blit(pygame.transform.flip(self.asset_3[self.dt % 5],False, False), (self.sun_hit_box.x-scroll[0]*self.delta_scroll_const, (self.curve_s(self.sun_hit_box.x)-scroll[1]*self.delta_scroll_const)))
+            self.sun_hit_box.x = 0
+        
+        
+
+
+        
+        self.master.blit(pygame.transform.flip(self.asset_main[self.dt % 5],False, False), (self.sun_hit_box.x-scroll[0]*self.delta_scroll_const, (self.curve_s(self.sun_hit_box.x) -scroll[1]*self.delta_scroll_const)))
+        
             
-            if  self.day_time in [20,21,22,23,0,1,2,3,4,5]:
-                self.asset_main = self.asset_1
-            else:
-                self.asset_main = self.asset_3
