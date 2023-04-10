@@ -2,17 +2,12 @@ import pygame
 from player import Player
 from png_class import Image_Pack
 
-
-
-
-
 class Construction:
 
-    def __init__(self,master,x,y,width,height,PNG:list,set_image:list[int]) -> None:
-        self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
+    def __init__(self,master,x:int,y:int,image) -> None:
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
         self.master = master
-        self.PNG = PNG
-        self.set_image = set_image
+        self.image = image
         
 
     def update(self,Player:Player,scroll:list[int,int]):
@@ -21,18 +16,22 @@ class Construction:
         
     def update_app(self,scroll):
         
-        for i,j in enumerate(self.set_image):
-            if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
-                self.master.blit(self.PNG[j], ((self.hit_box.x + i*50)-scroll[0], (self.hit_box.y)-scroll[1]))
+        
+        if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
+            self.master.blit(self.image, ((self.hit_box.x)-scroll[0], (self.hit_box.y)-scroll[1]))
 
         pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0],self.hit_box.y-scroll[1],self.hit_box.width,self.hit_box.height),2)
-        
+
+
+
+
+
 class penetrable_Platform(Construction):
 
-    def __init__(self, master, x, y, width, height, PNG: list,set_image) -> None:
-        super().__init__(master, x, y, width, height, PNG, set_image)
-        self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
-        self.height = height
+    def __init__(self, master, x, y, PNG: list,set_image) -> None:
+        super().__init__(master, x, y, 50, 50, PNG, set_image)
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50*50,50*50)
+        self.height = 50
         self.going_trough = False
 
     def update(self,Player:Player,scroll:list[int,int]):
@@ -65,12 +64,12 @@ class penetrable_Platform(Construction):
     
 class movable_Platform(Construction):
 
-    def __init__(self, master, x, y, width, height, PNG: list, set_image: list[int],distance_blocks:int,speed:int):
-        super().__init__(master, x, y, width, height, PNG, set_image)
+    def __init__(self, master, x, y, PNG: list, set_image: list[int]):
+        super().__init__(master, x, y, 50, 50, PNG, set_image)
         self.__x = x*50
         
-        self.distance_blocks = distance_blocks
-        self.speed = speed
+        self.distance_blocks = 5
+        self.speed = 3
 
     def player_movement(self,hit_box:pygame.rect.Rect):
         return self.hit_box.y == hit_box.y + hit_box.height and self.hit_box.x - hit_box.width <= hit_box.x <= self.hit_box.x + self.hit_box.width
@@ -98,16 +97,14 @@ class movable_Platform(Construction):
 class destroy_Platform(Construction):
     
 
-    def __init__(self, master, x, y, width, height, PNG: list, set_image: list[int],sec:int,rec:int) -> None:
-        super().__init__(master, x, y, width, height, PNG, set_image)
-        
-        
-        self.height = height
-        self.hit_box = pygame.rect.Rect(x*50,y*50,width*50,height*50)
+    def __init__(self, master, x, y,  PNG: list, set_image: list[int],) -> None:
+        super().__init__(master, x, y, 50, 50, PNG, set_image)
+        self.height = 50
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
         self.hbc = 0
-        self.__time = sec * 60
+        self.__time = 2 * 60
         self.time = self.__time
-        self.__recover_time = rec
+        self.__recover_time = 6
         self.touched = False
 
     def player_movement(self,hit_box:pygame.rect.Rect):

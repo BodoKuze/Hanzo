@@ -85,7 +85,7 @@ class Background:
     def update(self,scroll,dt):
 
 
-        self.day_time = 0
+        self.day_time = 12
         
         if dt % 10 == 0:
             self.dt += 1

@@ -19,7 +19,7 @@ def main():
     clock = pygame.time.Clock()
     playing = True
     dt = 0
-
+    
     while playing:
         dt += 1
         clock.tick(FPS)
@@ -30,7 +30,7 @@ def main():
         
 
         
-        game.update_elias(event,clock)
+        game.update(event,clock)
         
         pygame.display.flip()
     pygame.quit()
