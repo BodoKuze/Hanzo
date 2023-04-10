@@ -1,21 +1,23 @@
-from png_class import Image_Pack
 import os
 import pygame
-from random import randint
-from datetime import datetime
+from random import choice, randint
+import time
+import math
+from png_class import Image_Pack
+
 
 class Star:
 
-    def __init__(self,master,x,y,t) -> None:
+    def __init__(self, master, x, y, t):
         self.duration = t
-        size = randint(1,3)
-        self.hit_box = pygame.rect.Rect(x,y,size,size)
+        size = choice([1, 2, 3])
+        self.hit_box = pygame.rect.Rect(x, y, size, size)
         self.master = master
         self.dt = 0.0007
-        self.c = (randint(200,255),randint(200,255),randint(200,255))
+        self.c = (randint(200, 255), randint(200, 255), randint(200, 255))
         
-    def update(self,dt):
-        if  dt % self.duration != 0:
+    def update(self, dt):
+        if dt % self.duration != 0:
             pygame.draw.rect(self.master, self.c, self.hit_box)
 
 
@@ -48,8 +50,8 @@ class Background:
         self.cloud_speed = 0.1
         self.star_list = [Star(master,randint(0,800),randint(0,800),randint(20,100)) for i in range(60)]
 
-        self.day_time = 0
-        time = self.time_minimization([0,4,8,12,19,21],self.day_time)
+        self.day_time = 6
+        time = self.time_minimization([0,6,8,12,19,21],self.day_time)
         self.background_color_per_time = {
             0:[0, 0, 0],
             6:[255,135,92],
@@ -83,12 +85,16 @@ class Background:
         
 
     def update(self,scroll,dt):
+        
 
-
-        self.day_time = 12
+        
         
         if dt % 10 == 0:
             self.dt += 1
+            
+        if dt % 1000 == 0:
+            self.day_time += 1
+
 
         self.time_cycle(scroll)
         self.background_obj(scroll)
@@ -126,17 +132,25 @@ class Background:
 
     def time_cycle(self,scroll):
         
+        self.day = False
+        self.night = False
+        self.evening = False
+
+
+
+
         if self.day_time in [6,7,19,20]:
             self.evening = True
+            
             self.montains_asset = 1
             self.asset_main = self.asset_2
 
-        elif  self.day_time in [21,22,23,0,1,2,3,4,5]:
+        if  self.day_time in [21,22,23,24,0,1,2,3,4,5]:
             self.night = True
             self.montains_asset = 2
             self.asset_main = self.asset_1
         
-        else:
+        if self.day_time in [8,9,10,11,12,13,14,15,16,17,18]:
             self.day = True
             self.montains_asset = 0
             self.asset_main = self.asset_3
@@ -155,9 +169,10 @@ class Background:
                 i.update(self.dt)
 
 
-        if not self.night:
-
-            self.sun_hit_box.x = round(((self.day_time)*(500/14))+100-(3000/14))
+        if self.day or self.evening:
+            
+            if self.sun_hit_box.x != round(((self.day_time)*(500/14))+100-(3000/14)):
+                self.sun_hit_box.x += 1
         else:
             self.sun_hit_box.x = 0
         

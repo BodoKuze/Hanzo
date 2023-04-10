@@ -2,6 +2,29 @@ import pygame
 from player import Player
 from png_class import Image_Pack
 
+class Blit_Block:
+
+    def __init__(self,master,x:int,y:int,images,asset_part:int) -> None:
+        self.master = master
+        self.images = images
+        self.img = asset_part
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
+        
+        
+    def update(self,scroll):
+        
+        if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
+            self.master.blit(self.images[self.img], ((self.hit_box.x)-scroll[0], (self.hit_box.y)-scroll[1]))
+
+            
+
+
+
+
+
+
+
+
 class Construction:
 
     def __init__(self,master,x:int,y:int,image) -> None:
@@ -20,19 +43,21 @@ class Construction:
         if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
             self.master.blit(self.image, ((self.hit_box.x)-scroll[0], (self.hit_box.y)-scroll[1]))
 
-        pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0],self.hit_box.y-scroll[1],self.hit_box.width,self.hit_box.height),2)
+            pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0],self.hit_box.y-scroll[1],self.hit_box.width,self.hit_box.height),2)
 
 
 
 
 
-class penetrable_Platform(Construction):
+class penetrable_Platform():
 
-    def __init__(self, master, x, y, PNG: list,set_image) -> None:
-        super().__init__(master, x, y, 50, 50, PNG, set_image)
-        self.hit_box = pygame.rect.Rect(x*50,y*50,50*50,50*50)
+    def __init__(self, master, x, y,set_image) -> None:
+
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
         self.height = 50
+        self.master = master
         self.going_trough = False
+        self.image = set_image
 
     def update(self,Player:Player,scroll:list[int,int]):
         
@@ -51,9 +76,9 @@ class penetrable_Platform(Construction):
     def update_app(self,scroll:list[int,int]):
 
         
-        for i,j in enumerate(self.set_image):
-            if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
-                self.master.blit(self.PNG[j], (self.hit_box.x-scroll[0] + i*50, self.hit_box.y-scroll[1]))
+        
+        if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
+            self.master.blit(self.image, (self.hit_box.x-scroll[0], self.hit_box.y-scroll[1]))
 
 
 

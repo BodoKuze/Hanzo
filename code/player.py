@@ -206,7 +206,7 @@ class Player:
     def update(self, dt, list_objects, list_enteties,e):
         if dt % self.frame_switch == 0:
             self.dt += 1
-
+        
         self.true_scroll[0] += (self.hit_box.x-self.true_scroll[0]-375)/20
         self.true_scroll[1] += (self.hit_box.y-self.true_scroll[1]-500)/20
 
