@@ -38,3 +38,16 @@ class Image_Pack:
             if self.showing_pos >= len(self.__image_list):
                 self.showing_pos = 0
         
+class Blit_Block:
+
+    def __init__(self,master,x:int,y:int,image) -> None:
+        self.master = master
+
+        self.img = image
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
+        
+        
+    def update(self,igonre:None,scroll):
+            
+        if -50<= self.hit_box.x-scroll[0] <800 or -50<= self.hit_box.y-scroll[1] <800:
+            self.master.blit(self.img, ((self.hit_box.x)-scroll[0], (self.hit_box.y)-scroll[1]))

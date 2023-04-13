@@ -6,6 +6,7 @@ import math
 from png_class import Image_Pack
 
 
+
 class Star:
 
     def __init__(self, master, x, y, t):
@@ -50,7 +51,7 @@ class Background:
         self.cloud_speed = 0.1
         self.star_list = [Star(master,randint(0,800),randint(0,800),randint(20,100)) for i in range(60)]
 
-        self.day_time = 6
+        self.day_time = 22
         time = self.time_minimization([0,6,8,12,19,21],self.day_time)
         self.background_color_per_time = {
             0:[0, 0, 0],

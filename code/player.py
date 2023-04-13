@@ -1,8 +1,9 @@
 import pygame
 import os
-from png_class import Image_Pack
+from png_class import Image_Pack, Blit_Block
 from pygame.locals import *
 from label import Player_IF
+
 
 class Player:
     def __init__(self,master,up,down,left,rigth,jump,attack,x:int,y:int,flipped=False) -> None:
@@ -215,9 +216,6 @@ class Player:
         scroll[0] = int(scroll[0])
         scroll[1] = int(scroll[1])
 
-
-
-
         keys = pygame.key.get_pressed()
         self.moving = False
         self.attack = False
@@ -290,7 +288,7 @@ class Player:
         hit_list = []
         
         for tile in list_objects:
-            if self.hit_box.colliderect(tile.hit_box):
+            if self.hit_box.colliderect(tile.hit_box) and not isinstance(tile,Blit_Block):
                 hit_list.append(tile.hit_box)
             
         

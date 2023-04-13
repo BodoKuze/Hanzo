@@ -22,14 +22,15 @@ class Game:
         self.delta_time = 0
         self.bg = Background(master)
         self.text = Text(master,self.font_path,30,"60",0,0,100,50,(0,0,0))
-        assets = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sprite_block.png",8,1,(50,400)).get_images()
+
+        assets = Image_Pack(self.master,fr"{os.getcwd()}\sprites\sp1.png",6,2,(100,300)).get_images()
         
         self.test_time = 0 
         
-        self.map1 = Map(master,map1_rects,map1_add,None,assets)
+        self.map1 = Map(master,map,assets)
         
         self.platform_list = self.map1.create_block_map()
-        self.add_list = self.map1.create_add_map()
+
 
         self.enemy_list = []
 
@@ -37,19 +38,18 @@ class Game:
     def update_bg(self):
         self.bg.update(self.scroll,self.delta_time)
 
-        for i in self.add_list:
-            if -50 <= i.hit_box.x-self.scroll[0] <800:
-                    
-                i.update(self.scroll)
+        
 
     def update_fg(self,clock,player):
         self.player.player_if.update(player)
         self.update_label(clock)
+    
+
 
     def update(self,e,clock):
         self.delta_time += 1
         self.update_bg()
-
+        
         self.platform_update()
 
         self.update_fg(clock,self.player)
@@ -70,7 +70,7 @@ class Game:
     
                 i.update(self.player,self.scroll)
 
-        
+
 
     def update_label(self,clock):
         
