@@ -2,7 +2,6 @@ import os
 import pygame
 from main_game import Game
 
-
 pygame.font.init()
 pyg = pygame
 FONT = pygame.font.Font(fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf",30)
@@ -17,7 +16,7 @@ WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 game = Game(WIN,WIDTH,HEIGHT)
 
 def main():
-    
+
     clock = pygame.time.Clock()
     playing = True
     dt = 0
