@@ -66,7 +66,7 @@ class Game:
     def platform_update(self):
         
         for i in self.platform_list:
-            if -50 <= i.hit_box.x-self.scroll[0] <800:
+            if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800:
     
                 i.update(self.player,self.scroll)
 
