@@ -21,14 +21,14 @@ class Player_IF:
     def __init__(self,master) -> None:
         self.master = master
         self.images = Image_Pack(self.master,fr"{os.getcwd()}\sprites\subweapons.png",2,2,(200,200)).get_images()
-        
+        self.images.reverse()
 
     def update(self,player):
         pygame.draw.rect(self.master, (0, 0, 0), pygame.Rect(0, 0, 800, 150))
+
+        self.master.blit(self.images[player.weapon-1],(25,25))
         
-        self.master.blit(self.images[player.subweapon],(25,25))
-        
-        self.master.blit(self.images[0],(25,25))
+        self.master.blit(self.images[3],(25,25))
 
         
 

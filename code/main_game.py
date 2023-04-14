@@ -18,7 +18,7 @@ class Game:
         self.height = height
         self.scroll = [0,0]
         self.p = pygame
-        self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,100,100)   
+        self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,self.p.K_j,100,100)   
         self.delta_time = 0
         self.bg = Background(master)
         self.text = Text(master,self.font_path,30,"60",0,0,100,50,(0,0,0))
@@ -66,7 +66,7 @@ class Game:
     def platform_update(self):
         
         for i in self.platform_list:
-            if -50 <= i.hit_box.x-self.scroll[0] <800:
+            if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800:
     
                 i.update(self.player,self.scroll)
 

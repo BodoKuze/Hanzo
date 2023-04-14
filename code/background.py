@@ -5,8 +5,6 @@ import time
 import math
 from png_class import Image_Pack
 
-
-
 class Star:
 
     def __init__(self, master, x, y, t):
@@ -30,14 +28,10 @@ class Background:
         self.asset_3 = Image_Pack(master,fr"{os.getcwd()}\sprites\day_assets.png",3,3,(300,300)).get_images()
         self.asset_main = self.asset_1
         self.montains = Image_Pack(master,fr"{os.getcwd()}\sprites\background_montains.png",3,1,(1000,600)).get_images()
-        
         self.evening = False
         self.day = False
         self.night = False
-
-        
         self.sun_hit_box =pygame.rect.Rect(0,0,100,100)
-        
         self.master = master
         self.delta_scroll_const = 0.000025
         self.dt = 1
@@ -50,7 +44,6 @@ class Background:
         ]
         self.cloud_speed = 0.1
         self.star_list = [Star(master,randint(0,800),randint(0,800),randint(20,100)) for i in range(60)]
-
         self.day_time = 22
         time = self.time_minimization([0,6,8,12,19,21],self.day_time)
         self.background_color_per_time = {
@@ -87,23 +80,17 @@ class Background:
 
     def update(self,scroll,dt):
         
-
-        
-        
         if dt % 10 == 0:
             self.dt += 1
             
         if dt % 1000 == 0:
             self.day_time += 1
 
-
         self.time_cycle(scroll)
         self.background_obj(scroll)
-        
-        
         self.update_cloud(scroll)
 
-
+        
     def curve_s(self,x):
         return (((x-350))**(2))/160 + 135
 
@@ -113,7 +100,6 @@ class Background:
 
         if self.dt % 2 == 0:  
             
-
             for i,j in enumerate(self.bg_color):
                 if self.background_color_per_time[time][i] != j:
                     if j < self.background_color_per_time[time][i]:
@@ -156,7 +142,6 @@ class Background:
             self.montains_asset = 0
             self.asset_main = self.asset_3
         
-        
         if self.day_time >= 24:
             self.day_time = 0
                
@@ -169,17 +154,12 @@ class Background:
             for i in self.star_list:
                 i.update(self.dt)
 
-
         if self.day or self.evening:
             
-            if self.sun_hit_box.x != round(((self.day_time)*(500/14))+100-(3000/14)):
-                self.sun_hit_box.x += 1
+            self.sun_hit_box.x = round(((self.day_time)*(500/14))+100-(3000/14))
+                
         else:
             self.sun_hit_box.x = 0
-        
-        
-
-
         
         self.master.blit(pygame.transform.flip(self.asset_main[self.dt % 5],False, False), (self.sun_hit_box.x-scroll[0]*self.delta_scroll_const, (self.curve_s(self.sun_hit_box.x) -scroll[1]*self.delta_scroll_const)))
         

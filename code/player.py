@@ -3,15 +3,15 @@ import os
 from png_class import Image_Pack, Blit_Block
 from pygame.locals import *
 from label import Player_IF
-
+import time
 
 class Player:
-    def __init__(self,master,up,down,left,rigth,jump,attack,x:int,y:int,flipped=False) -> None:
+    def __init__(self,master,up,down,left,rigth,jump,attack,sub,x:int,y:int,flipped=False) -> None:
         self.master = master
-        self.control = [up,down,left,rigth,jump,attack]
+        self.control = [up,down,left,rigth,jump,attack,sub]
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-        
+        self.start_time = 0
         self.moving = False
         self.speed = 5
         self.dt = 0
@@ -62,7 +62,7 @@ class Player:
 
         self.hp = 10
         self.mp = 10
-        self.subweapon = 3
+        self.weapon = 1
 
     def update_movement_list(self):
         
@@ -185,7 +185,7 @@ class Player:
                 self.sword = pygame.rect.Rect(self.hit_box.x+50,self.hit_box.y+10,50,30)
             if self.flip:
                 self.sword = pygame.rect.Rect(self.hit_box.x-50,self.hit_box.y+10,50,30)
-            
+                
             pygame.draw.rect(self.master,(0,255,0),pygame.rect.Rect(self.sword.x-scroll[0],self.sword.y-scroll[1],self.sword.width,self.sword.height) ,2)
 
         else:
@@ -201,7 +201,17 @@ class Player:
             if self.air_timer > self.jump_height:
                 self.jump = False
 
-
+    
+        
+        
+    def sb_cooldown(self):
+        if self.start_time == 0:
+            return True
+        
+        if self.start_time > 0:
+            self.start_time -= 1
+            return False
+        
 
 
     def update(self, dt, list_objects, list_enteties,e):
@@ -242,13 +252,20 @@ class Player:
             self.ducking = True
         
         if keys[self.control[5]] and not self.attack and self.attack_cooldown == 0:
-  
-            self.attack = True
+            if self.weapon == 1:
+                self.attack = True
         
         if keys[self.control[4]] and self.collision_types['bottom']:
             
             self.jump_hold = True
-        
+
+        if keys[self.control[6]] and not self.attack and self.sb_cooldown():
+            self.start_time = 15
+            self.weapon += 1
+            if self.weapon == 4:
+                self.weapon = 1
+            
+
         if not keys[self.control[4]]:
             self.jump_hold = False
 
