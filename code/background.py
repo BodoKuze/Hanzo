@@ -90,7 +90,7 @@ class Background:
         self.background_obj(scroll)
         self.update_cloud(scroll)
 
-
+        
     def curve_s(self,x):
         return (((x-350))**(2))/160 + 135
 
@@ -156,8 +156,8 @@ class Background:
 
         if self.day or self.evening:
             
-            if self.sun_hit_box.x != round(((self.day_time)*(500/14))+100-(3000/14)):
-                self.sun_hit_box.x += 1
+            self.sun_hit_box.x = round(((self.day_time)*(500/14))+100-(3000/14))
+                
         else:
             self.sun_hit_box.x = 0
         
