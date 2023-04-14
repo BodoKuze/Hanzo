@@ -61,16 +61,14 @@ class Game:
         
         for i in self.enemy_list:
             i.update(self.delta_time,self.scroll)     
-
+    
 
     def platform_update(self):
         
         for i in self.platform_list:
-            if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800:
-    
+            if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800 or isinstance(i,destroy_Platform):
+                
                 i.update(self.player,self.scroll)
-
-
 
     def update_label(self,clock):
         
