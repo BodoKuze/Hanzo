@@ -15,7 +15,7 @@ WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 game = Game(WIN,WIDTH,HEIGHT)
 
 def main():
-
+    
     clock = pygame.time.Clock()
     playing = True
     dt = 0
