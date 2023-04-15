@@ -19,6 +19,11 @@ class Player:
         self.shadow_image_list1 = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(0,0,50))
         self.shadow_image_list2 = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(0,0,100))
         self.shadow_image_list3 = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(0,0,150))
+        
+        self.shadow_image_list1b = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(50,0,0))
+        self.shadow_image_list2b = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(100,0,0))
+        self.shadow_image_list3b = self.create_shadow(Image_Pack(self.master,fr"{os.getcwd()}\sprites\char.png",5,10,(500,500)).get_images(),(150,0,0))
+        
         self.collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         
         self.frame_switch = 10
@@ -154,10 +159,16 @@ class Player:
         
         
         
+        if self.speed == 5:
+            self.blit_player(self.shadow_image_list1,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
+            self.blit_player(self.shadow_image_list2,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
+            self.blit_player(self.shadow_image_list3,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
+        else:
+            self.blit_player(self.shadow_image_list1b,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
+            self.blit_player(self.shadow_image_list2b,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
+            self.blit_player(self.shadow_image_list3b,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
 
-        self.blit_player(self.shadow_image_list1,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
-        self.blit_player(self.shadow_image_list2,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
-        self.blit_player(self.shadow_image_list3,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
+        
         self.blit_player(self.image_list,img,self.flip,self.hit_box.x,self.hit_box.y,scroll)
 
         pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
@@ -200,11 +211,6 @@ class Player:
             
             if self.air_timer > self.jump_height:
                 self.jump = False
-
-    
-        
-
-        
 
 
     def update(self, dt, list_objects, list_enteties,e):
@@ -254,9 +260,14 @@ class Player:
         if not keys[self.control[4]]:
             self.jump_hold = False
 
-        if keys[self.control[6]] and not self.attack:
+        if keys[self.control[6]] and not self.attack and self.mp >= 0:
+            self.speed = 8
+            if dt % 40 == 0:
+                self.mp -= 1
+        else:
+            if dt % 200 == 0 and self.mp < 10:
+                self.mp += 1
             self.speed = 5
-            
 
         
 
@@ -274,9 +285,9 @@ class Player:
             self.air_timer = 0
             self.vertical_mv = 0
         
-        if self.hit_box.y >= 2000:
+        if self.hit_box.y >= 750:
             self.hit_box.y = 0
-            self.hit_box.x = 50
+            self.hit_box.x = 250
         
         
 
@@ -288,8 +299,15 @@ class Player:
         
 
         return scroll
-        
     
+    def damage_cooldown(self):
+        pass
+
+
+    def hit_with_en(self,ent):
+        pass
+
+
 
 
     def if_collision(self, list_objects: list):

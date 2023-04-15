@@ -33,7 +33,7 @@ class Player_IF:
         
 
         for i in range(player.hp):
-            pygame.draw.rect(self.master, (235, 86, 75), pygame.Rect(150+i*30, 50, 20, 20))
+            pygame.draw.rect(self.master, (235, 86, 75), pygame.Rect(150+i*30, 50, 20, 20),)
         
         for i in range(player.mp):
-            pygame.draw.rect(self.master, (77, 166, 255), pygame.Rect(150+i*30, 75, 20, 20))
+            pygame.draw.rect(self.master, (77, 166, 255), pygame.Rect(150+i*30, 75, 20, 20),)

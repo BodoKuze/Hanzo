@@ -1,5 +1,6 @@
 import pygame
 from platforms import *
+from enemy import *
 import os
 from png_class import Image_Pack, Blit_Block
 
@@ -10,7 +11,7 @@ class Map:
         self.master = master
         self.block_map = block_map
         self.block_rect_map = []
-        self.block_add_map = []
+        self.entety_map = []
         self.destructive_platform_sprites = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
         self.assets = assets
         
@@ -37,4 +38,7 @@ class Map:
                         self.block_rect_map.append(Blit_Block(self.master,x,y,self.assets[3]))
                     case 9:
                         self.block_rect_map.append(Blit_Block(self.master,x,y,self.assets[4]))
-        return self.block_rect_map
+                    case 10:
+                        self.entety_map.append(Bat(self.master,x,y))
+
+        return self.block_rect_map,self.entety_map
