@@ -11,7 +11,7 @@ class Player:
         self.control = [up,down,left,rigth,jump,attack,sub]
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-        self.start_time = 0
+
         self.moving = False
         self.speed = 5
         self.dt = 0
@@ -203,14 +203,7 @@ class Player:
 
     
         
-        
-    def sb_cooldown(self):
-        if self.start_time == 0:
-            return True
-        
-        if self.start_time > 0:
-            self.start_time -= 1
-            return False
+
         
 
 
@@ -258,16 +251,14 @@ class Player:
         if keys[self.control[4]] and self.collision_types['bottom']:
             
             self.jump_hold = True
-
-        if keys[self.control[6]] and not self.attack and self.sb_cooldown():
-            self.start_time = 15
-            self.weapon += 1
-            if self.weapon == 4:
-                self.weapon = 1
-            
-
         if not keys[self.control[4]]:
             self.jump_hold = False
+
+        if keys[self.control[6]] and not self.attack:
+            self.speed = 5
+            
+
+        
 
 
         self.movement[1] += self.vertical_mv
