@@ -64,10 +64,11 @@ class Player:
         self.movement_list = [(x,y) for i in range(10)]
         self.true_scroll = [0,0]
 
-
+        self.weapon = 1
         self.hp = 10
         self.mp = 10
-        self.weapon = 1
+        self.dmg_cooldown = 0
+        
 
     def update_movement_list(self):
         
@@ -157,21 +158,21 @@ class Player:
         if self.attack and self.air_timer > 0:
             img = actions_frames["attack_air"] 
         
+        if self.dmg_cooldown % 2 == 0:
         
-        
-        if self.speed == 5:
-            self.blit_player(self.shadow_image_list1,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
-            self.blit_player(self.shadow_image_list2,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
-            self.blit_player(self.shadow_image_list3,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
-        else:
-            self.blit_player(self.shadow_image_list1b,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
-            self.blit_player(self.shadow_image_list2b,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
-            self.blit_player(self.shadow_image_list3b,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
+            if self.speed == 5:
+                self.blit_player(self.shadow_image_list1,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
+                self.blit_player(self.shadow_image_list2,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
+                self.blit_player(self.shadow_image_list3,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
+            else:
+                self.blit_player(self.shadow_image_list1b,img,self.flip,self.shadow_hit_box1.x,self.shadow_hit_box1.y,scroll)
+                self.blit_player(self.shadow_image_list2b,img,self.flip,self.shadow_hit_box2.x,self.shadow_hit_box2.y,scroll)
+                self.blit_player(self.shadow_image_list3b,img,self.flip,self.shadow_hit_box3.x,self.shadow_hit_box3.y,scroll)
 
-        
-        self.blit_player(self.image_list,img,self.flip,self.hit_box.x,self.hit_box.y,scroll)
+            
+            self.blit_player(self.image_list,img,self.flip,self.hit_box.x,self.hit_box.y,scroll)
 
-        pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
+            pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
 
 
     def sword_attack(self,scroll):
@@ -296,16 +297,22 @@ class Player:
         self.update_alucard_sd()
         self.sword_attack(scroll)
         self.jumping()
-        
-
+        self.hit_with_en(list_enteties)
         return scroll
-    
+
     def damage_cooldown(self):
-        pass
+        if  0 < self.dmg_cooldown < 20:
+            self.dmg_cooldown += 1
+        else:
+            self.dmg_cooldown = 0
 
 
     def hit_with_en(self,ent):
-        pass
+        self.damage_cooldown()
+        for i in ent:
+            if self.hit_box.colliderect(i.hit_box) and self.dmg_cooldown == 0:
+                self.dmg_cooldown = 1
+                self.hp -= i.dmg
 
 
 

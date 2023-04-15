@@ -57,7 +57,7 @@ class Game:
         self.update_enteties(e)
         
     def update_enteties(self,e):
-        self.scroll = self.player.update(self.delta_time,self.platform_list,None,e)
+        self.scroll = self.player.update(self.delta_time,self.platform_list,self.enemy_list,e)
         
         for num,i in enumerate(self.enemy_list):
             if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800:
