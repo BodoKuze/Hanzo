@@ -9,6 +9,7 @@ from map_class import *
 from background import Background
 from label import Text
 from maps import *
+from effect import *
 
 class Game:
     def __init__(self,master,width,height) -> None:
@@ -19,6 +20,7 @@ class Game:
         self.scroll = [0,0]
         self.p = pygame
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,self.p.K_j,250,0)   
+        self.player_effect = None
         self.delta_time = 0
         self.bg = Background(master)
         self.text = Text(master,self.font_path,30,"60",0,0,100,50,(0,0,0))
@@ -57,8 +59,27 @@ class Game:
         self.update_enteties(e)
         
     def update_enteties(self,e):
-        self.scroll = self.player.update(self.delta_time,self.platform_list,self.enemy_list,e)
         
+        
+        
+        
+        if self.player.hp > 0:
+        
+            self.scroll = self.player.update(self.delta_time,self.platform_list,self.enemy_list,e)
+        
+        elif self.player_effect == None:
+            self.player_effect = Player_Dead(self.master,self.player.hit_box.x,self.player.hit_box.y)
+        
+        else:
+            self.player_effect.activeate_animation(self.delta_time,self.scroll)
+
+
+
+
+
+
+
+
         for num,i in enumerate(self.enemy_list):
             if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800:
                 i.update(self.delta_time,self.scroll,self.player.sword)     

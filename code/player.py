@@ -65,7 +65,7 @@ class Player:
         self.true_scroll = [0,0]
 
         self.weapon = 1
-        self.hp = 10
+        self.hp = 2
         self.mp = 10
         self.dmg_cooldown = 0
         

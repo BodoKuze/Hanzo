@@ -40,7 +40,7 @@ class Bat:
         else:
             self.cooldown = 0
 
-
+    
 
     def get_hit(self,sword):
         self.hit_box_cooldown()
