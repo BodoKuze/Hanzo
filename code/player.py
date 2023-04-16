@@ -11,7 +11,7 @@ class Player:
         self.control = [up,down,left,rigth,jump,attack,sub]
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-        
+
         self.moving = False
         self.speed = 5
         self.dt = 0
@@ -219,9 +219,11 @@ class Player:
             if self.hit_box.colliderect(i.hit_box):
                 if not i.active:
                     self.check_point = [i.hit_box.x,i.hit_box.y-50]
+                    self.hp = 10
+                    self.mp = 10
                     i.active = True
 
-    def update(self, dt, list_objects, list_enteties,stage_i,e):
+    def update(self, dt, list_objects, list_enteties,stage_i):
         if dt % self.frame_switch == 0:
             self.dt += 1
         

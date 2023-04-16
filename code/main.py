@@ -29,7 +29,7 @@ def main():
                 playing = False
 
         
-        game.update(event,clock)
+        game.update(clock)
         
 
 

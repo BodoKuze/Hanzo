@@ -31,6 +31,7 @@ class Background:
         self.evening = False
         self.day = False
         self.night = False
+        self.time_mvnt = False
         self.sun_hit_box =pygame.rect.Rect(0,0,100,100)
         self.master = master
         self.delta_scroll_const = 0.000025
@@ -82,9 +83,9 @@ class Background:
         
         if dt % 10 == 0:
             self.dt += 1
-            
-        if dt % 300 == 0:
-            self.day_time += 1
+        if self.time_mvnt: 
+            if dt % 300 == 0:
+                self.day_time += 1
 
         self.time_cycle(scroll)
         self.background_obj(scroll)

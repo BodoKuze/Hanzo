@@ -16,6 +16,8 @@ class Text:
     def update_text(self,text:str,color:tuple[int,int,int]):
         self.text = self.font.render(f"{text}",True,color)
 
+
+
 class Player_IF:
 
     def __init__(self,master) -> None:
