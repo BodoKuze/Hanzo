@@ -16,7 +16,7 @@ class Map:
         self.stage_i = []
         self.destructive_platform_sprites = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
         self.assets = assets
-        
+        self.lvl_clear = None
 
     def create_block_map(self):
         for y,row in enumerate(self.block_map):
@@ -46,5 +46,7 @@ class Map:
                         self.entety_map.append(Ronin(self.master,x,y))
                     case 12:
                         self.stage_i.append(Checkpoint(self.master,x,y))
-        
-        return self.block_rect_map,self.entety_map,self.stage_i
+                    case 13:
+                        self.lvl_clear = Level_Clear(x,y)
+
+        return self.block_rect_map,self.entety_map,self.stage_i,self.lvl_clear

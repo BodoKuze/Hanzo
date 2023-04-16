@@ -11,7 +11,7 @@ class Player:
         self.control = [up,down,left,rigth,jump,attack,sub]
         self.x_when_flipped = x+ 50
         self.y_when_flipped = y+ 50
-
+        
         self.moving = False
         self.speed = 5
         self.dt = 0

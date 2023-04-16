@@ -8,7 +8,7 @@ from enemy import *
 from map_class import *
 from background import Background
 from label import Text
-from maps import *
+from maps import map
 from vfx import *
 
 class Game:
@@ -19,7 +19,7 @@ class Game:
         self.height = height
         self.scroll = [0,0]
         self.enemy_vfx_list = []
-        
+        self.game_run = True
         self.p = pygame
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,self.p.K_j,250,0)   
         self.player_effect = None
@@ -33,7 +33,7 @@ class Game:
         
         self.map1 = Map(master,map,assets)
         
-        self.platform_list,self.enemy_list,self.stage_i = self.map1.create_block_map()
+        self.platform_list,self.enemy_list,self.stage_i,self.lvl_clear = self.map1.create_block_map()
 
 
         
@@ -51,14 +51,14 @@ class Game:
 
 
     def update(self,e,clock):
-        self.delta_time += 1
-        self.update_bg()
         
-        self.platform_update()
-
-        self.update_fg(clock,self.player)
-
-        self.update_enteties(e)
+        
+        if self.game_run:
+            self.delta_time += 1
+            self.update_bg()
+            self.platform_update()
+            self.update_fg(clock,self.player)
+            self.update_enteties(e)
         
     def update_enteties(self,e):
         
@@ -111,6 +111,8 @@ class Game:
 
                 i.update(self.delta_time,self.scroll)
 
+        if self.player.hit_box.colliderect(self.lvl_clear.hit_box):
+            self.game_run = False
 
     def update_label(self,clock):
         
