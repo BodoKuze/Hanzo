@@ -72,10 +72,10 @@ class Bat:
     def update_app(self,scroll):
         if self.cooldown == 0:
             self.master.blit(pygame.transform.flip(self.image_list[self.dt % 3], self.flip, False), (self.hit_box.x-scroll[0], self.hit_box.y-scroll[1]))
-            pygame.draw.rect(self.master,(255,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
+            
         else:
             self.master.blit(pygame.transform.flip(self.image_list_when_hit[self.dt % 3], self.flip, False), (self.hit_box.x-scroll[0], self.hit_box.y-scroll[1]))
-            pygame.draw.rect(self.master,(0,0,255),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
+            
             
 
     def curve(self):
@@ -94,7 +94,7 @@ class Ronin:
         self.dt = 0
         self.dmg = 3
         self.flip = True
-        self.hp = 5
+        self.hp = 3
         self.d_velocity = 2
 
     def create_red_tiles(self,image_list,color):
@@ -135,7 +135,7 @@ class Ronin:
             self.dt += 1
         
         self.hit_box.x += self.d_velocity
-        
+
         if self.__x + 100 >= self.hit_box.x:
             self.d_velocity *= -1
         
@@ -151,7 +151,7 @@ class Ronin:
     def update_app(self,scroll):
         if self.cooldown == 0:
             self.master.blit(pygame.transform.flip(self.image_list[self.dt % 2], self.flip, False), (self.hit_box.x-scroll[0]-20, self.hit_box.y-scroll[1]))
-            pygame.draw.rect(self.master,(255,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
+            
         else:
             self.master.blit(pygame.transform.flip(self.image_list_when_hit[self.dt % 2], self.flip, False), (self.hit_box.x-scroll[0]-20, self.hit_box.y-scroll[1]))
-            pygame.draw.rect(self.master,(0,0,255),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
+            

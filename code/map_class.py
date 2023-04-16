@@ -3,6 +3,7 @@ from platforms import *
 from enemy import *
 import os
 from png_class import Image_Pack, Blit_Block
+from stage_interactions import *
 
 class Map:
 
@@ -12,6 +13,7 @@ class Map:
         self.block_map = block_map
         self.block_rect_map = []
         self.entety_map = []
+        self.stage_i = []
         self.destructive_platform_sprites = Image_Pack(self.master,fr"{os.getcwd()}\sprites\ds_block.png",6,1,(50,300)).get_images()
         self.assets = assets
         
@@ -42,6 +44,7 @@ class Map:
                         self.entety_map.append(Bat(self.master,x,y))
                     case 11:
                         self.entety_map.append(Ronin(self.master,x,y))
-
-
-        return self.block_rect_map,self.entety_map
+                    case 12:
+                        self.stage_i.append(Checkpoint(self.master,x,y))
+        
+        return self.block_rect_map,self.entety_map,self.stage_i

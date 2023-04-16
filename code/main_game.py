@@ -19,6 +19,7 @@ class Game:
         self.height = height
         self.scroll = [0,0]
         self.enemy_vfx_list = []
+        
         self.p = pygame
         self.player = Player(master,self.p.K_w,self.p.K_s,self.p.K_a,self.p.K_d,self.p.K_SPACE,self.p.K_k,self.p.K_j,250,0)   
         self.player_effect = None
@@ -32,7 +33,7 @@ class Game:
         
         self.map1 = Map(master,map,assets)
         
-        self.platform_list,self.enemy_list = self.map1.create_block_map()
+        self.platform_list,self.enemy_list,self.stage_i = self.map1.create_block_map()
 
 
         
@@ -81,7 +82,7 @@ class Game:
         
         if self.player.hp > 0:
         
-            self.scroll = self.player.update(self.delta_time,self.platform_list,self.enemy_list,e)
+            self.scroll = self.player.update(self.delta_time,self.platform_list,self.enemy_list,self.stage_i,e)
         
         elif self.player_effect == None:
             self.player_effect = Player_Dead(self.master,self.player.hit_box.x,self.player.hit_box.y)
@@ -104,6 +105,12 @@ class Game:
             if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800 or isinstance(i,destroy_Platform):
                 
                 i.update(self.player,self.scroll)
+
+        for i in self.stage_i:
+            if -50 <= i.hit_box.x-self.scroll[0] <800 and -50 <= i.hit_box.y-self.scroll[1] <800 or isinstance(i,destroy_Platform):
+
+                i.update(self.delta_time,self.scroll)
+
 
     def update_label(self,clock):
         

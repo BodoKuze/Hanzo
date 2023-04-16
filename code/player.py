@@ -50,6 +50,7 @@ class Player:
         
         self.jump_height = 16
         
+        self.check_point = [x,y]
        
         self.gravity = 10
         self.ducking = False
@@ -213,8 +214,14 @@ class Player:
             if self.air_timer > self.jump_height:
                 self.jump = False
 
+    def set_new_check_point(self,stage_i):
+        for i in stage_i:
+            if self.hit_box.colliderect(i.hit_box):
+                if not i.active:
+                    self.check_point = [i.hit_box.x,i.hit_box.y-50]
+                    i.active = True
 
-    def update(self, dt, list_objects, list_enteties,e):
+    def update(self, dt, list_objects, list_enteties,stage_i,e):
         if dt % self.frame_switch == 0:
             self.dt += 1
         
@@ -287,9 +294,10 @@ class Player:
             self.vertical_mv = 0
         
         if self.hit_box.y >= 750:
-            self.hit_box.y = 0
-            self.hit_box.x = 250
+            self.hit_box.y = self.check_point[1]
+            self.hit_box.x = self.check_point[0]
             self.hp -= 1
+        
         
 
         self.update_app(self.dt,scroll)
@@ -298,6 +306,7 @@ class Player:
         self.sword_attack(scroll)
         self.jumping()
         self.hit_with_en(list_enteties)
+        self.set_new_check_point(stage_i)
         return scroll
 
     def damage_cooldown(self):
