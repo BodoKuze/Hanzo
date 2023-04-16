@@ -2,7 +2,7 @@ import pygame
 import os
 from png_class import Image_Pack
 from math import sin
-
+from sound import Sound_Effect
 
 
 
@@ -20,6 +20,7 @@ class Bat:
         self.hp = 1
         self.cooldown = 0
         self.dmg = 2
+        self.get_hit_sfx = Sound_Effect("bat_hit")
 
 
     def update(self,dt,scroll,sword_hit_box:pygame.rect.Rect):
@@ -49,7 +50,7 @@ class Bat:
                 
                 self.cooldown = 1
                 self.hp -= 1
-                
+                self.get_hit_sfx.play()
         
     def create_red_tiles(self,image_list,color):
         
@@ -96,6 +97,7 @@ class Ronin:
         self.flip = True
         self.hp = 3
         self.d_velocity = 2
+        self.get_hit_sfx = Sound_Effect("ronin_hit")
 
     def create_red_tiles(self,image_list,color):
         
@@ -128,7 +130,7 @@ class Ronin:
                 
                 self.cooldown = 1
                 self.hp -= 1
-                
+                self.get_hit_sfx.play()
 
     def update(self,dt,scroll,sword_hit_box:pygame.rect.Rect):
         if dt % 10 == 0:

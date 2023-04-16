@@ -1,6 +1,7 @@
 from label import Text
 import os
 import pygame
+from sound import Sound_Effect
 
 class Title:
     def __init__(self,master,yes,up,down) -> None:
@@ -23,6 +24,11 @@ class Title:
         self.track = Text(master,self.font_path,30,"track :",315,350,700,300,(255,255,255))
         self.track2 = Text(master,self.font_path,30,"A",435,350,700,300,(255,255,255))
         self.start_game = Text(master,self.font_path,30,"start",315,400,700,300,(255,255,255))
+        
+        self.arrow_sfx = Sound_Effect("menu")
+        self.start_game_sfx = Sound_Effect("start_game")
+
+
 
         self.start = False
 
@@ -42,6 +48,7 @@ class Title:
         keys = pygame.key.get_pressed()
 
         if keys[self.inputs[0]] and self.buffer_input == 0:
+            self.arrow_sfx.play()
             self.buffer_input = 1
             match self.courser_x :
 
@@ -54,6 +61,7 @@ class Title:
                         self.music_track = 0
 
                 case 2:
+                    self.start_game_sfx.play()
                     self.start = True
 
 
@@ -61,9 +69,11 @@ class Title:
         if keys[self.inputs[2]] and self.buffer_input == 0:
             self.buffer_input = 1
             self.courser_x += 1
+            self.arrow_sfx.play()
         if keys[self.inputs[1]] and self.buffer_input == 0:
             self.buffer_input = 1
             self.courser_x -= 1
+            self.arrow_sfx.play()
 
         if self.courser_x < 0:
             self.courser_x = 2
@@ -77,7 +87,9 @@ class Title:
                 self.courser = Text(self.master,self.font_path,30,">",290,350,700,300,(255,255,255))
             case 2:
                 self.courser = Text(self.master,self.font_path,30,">",290,400,700,300,(255,255,255))
-            
+
+
+
         self.update_app(dt)
 
 

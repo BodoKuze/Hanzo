@@ -56,7 +56,7 @@ class Enemy_Dead:
 
         
 
-        self.radius += 5
+        self.radius += 8
         alpha = max(255 - self.radius, 0)
         color = (235, 86, 75) 
 

@@ -84,7 +84,7 @@ class Background:
         if dt % 10 == 0:
             self.dt += 1
         if self.time_mvnt: 
-            if dt % 300 == 0:
+            if dt % 900 == 0:
                 self.day_time += 1
 
         self.time_cycle(scroll)

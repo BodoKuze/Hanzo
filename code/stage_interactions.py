@@ -12,6 +12,7 @@ class Checkpoint:
         self.dt = 0
         self.flip = False
         self.image_list=Image_Pack(self.master,fr"{os.getcwd()}\sprites\checkpoint.png",3,1,(50,150)).get_images() 
+        
 
     def update(self,dt,scroll):
 

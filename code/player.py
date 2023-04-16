@@ -3,7 +3,7 @@ import os
 from png_class import Image_Pack, Blit_Block
 from pygame.locals import *
 from label import Player_IF
-import time
+from sound import *
 
 class Player:
     def __init__(self,master,up,down,left,rigth,jump,attack,sub,x:int,y:int,flipped=False) -> None:
@@ -69,8 +69,12 @@ class Player:
         self.hp = 10
         self.mp = 10
         self.dmg_cooldown = 0
-        
 
+        self.sword_sfx = Sound_Effect("sword")
+        self.check_point_sfx = Sound_Effect("checkpoint")
+        self.player_falling = Sound_Effect("falling")
+        self.damage_sfx = Sound_Effect("ronin_hit")
+        
     def update_movement_list(self):
         
         
@@ -185,6 +189,9 @@ class Player:
                 self.image_counter = 0
 
             self.atk_buffer += 1
+            
+            if self.atk_buffer == 1:
+                self.sword_sfx.play()
 
             if self.atk_buffer % 3 == 0 and self.atk_buffer < 9:
                 self.image_counter += 1
@@ -221,6 +228,7 @@ class Player:
                     self.check_point = [i.hit_box.x,i.hit_box.y-50]
                     self.hp = 10
                     self.mp = 10
+                    self.check_point_sfx.play()
                     i.active = True
 
     def update(self, dt, list_objects, list_enteties,stage_i):
@@ -298,6 +306,7 @@ class Player:
         if self.hit_box.y >= 750:
             self.hit_box.y = self.check_point[1]
             self.hit_box.x = self.check_point[0]
+            self.player_falling.play()
             self.hp -= 1
         
         
@@ -309,6 +318,7 @@ class Player:
         self.jumping()
         self.hit_with_en(list_enteties)
         self.set_new_check_point(stage_i)
+
         return scroll
 
     def damage_cooldown(self):
@@ -324,7 +334,7 @@ class Player:
             if self.hit_box.colliderect(i.hit_box) and self.dmg_cooldown == 0:
                 self.dmg_cooldown = 1
                 self.hp -= i.dmg
-
+                self.damage_sfx.play()
 
 
 
