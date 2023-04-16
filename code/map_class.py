@@ -40,5 +40,8 @@ class Map:
                         self.block_rect_map.append(Blit_Block(self.master,x,y,self.assets[4]))
                     case 10:
                         self.entety_map.append(Bat(self.master,x,y))
+                    case 11:
+                        self.entety_map.append(Ronin(self.master,x,y))
+
 
         return self.block_rect_map,self.entety_map

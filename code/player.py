@@ -65,7 +65,7 @@ class Player:
         self.true_scroll = [0,0]
 
         self.weapon = 1
-        self.hp = 2
+        self.hp = 10
         self.mp = 10
         self.dmg_cooldown = 0
         
@@ -289,7 +289,7 @@ class Player:
         if self.hit_box.y >= 750:
             self.hit_box.y = 0
             self.hit_box.x = 250
-        
+            self.hp -= 1
         
 
         self.update_app(self.dt,scroll)
@@ -301,7 +301,7 @@ class Player:
         return scroll
 
     def damage_cooldown(self):
-        if  0 < self.dmg_cooldown < 20:
+        if  0 < self.dmg_cooldown < 120:
             self.dmg_cooldown += 1
         else:
             self.dmg_cooldown = 0
