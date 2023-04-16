@@ -4,7 +4,7 @@ import os
 
 
 class Checkpoint:
-
+    
     def __init__(self,master,x,y) -> None:
         self.master = master
         self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
@@ -31,5 +31,10 @@ class Checkpoint:
 
 class Level_Clear:
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self,master,x,y) -> None:
+        self.master = master
+        self.hit_box = pygame.rect.Rect(x*50,y*50,50,50)
+        self.active = False
+        self.dt = 0
+        self.flip = False
+        self.image_list=Image_Pack(self.master,fr"{os.getcwd()}\sprites\checkpoint.png",3,1,(50,150)).get_images() 
