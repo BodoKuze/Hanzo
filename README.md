@@ -12,7 +12,7 @@ The game can be started directly via the supplied exe file.
 
 Controls
 
-The game is controlled via the keyboard. The player moves with WASD and jumps with the space bar. The attack is executed with the K key.
+The game is controlled via the keyboard. The player moves with WASD, sprints with J and jumps with the space bar. The attack is executed with the K key.
 
 Gameplay
 
