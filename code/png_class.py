@@ -29,14 +29,7 @@ class Image_Pack:
         
     def get_images(self) -> list:
         return self.__image_list
-    
-    def show_images(self, dt):
-        self.master.blit(pygame.transform.flip(self.__image_list[self.showing_pos], False, False), (0, 0))
 
-        if dt % 10 == 0:
-            self.showing_pos += 1
-            if self.showing_pos >= len(self.__image_list):
-                self.showing_pos = 0
         
 class Blit_Block:
 

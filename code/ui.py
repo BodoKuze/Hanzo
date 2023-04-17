@@ -13,7 +13,7 @@ class Title:
         self.inputs = [yes,up,down]
         self.buffer_input = 0
         self.font_path = fr"{os.getcwd()}\font\EndlessBossBattleRegular-v7Ey.ttf"
-
+        
         self.music_track = 0
 
         self.courser = Text(master,self.font_path,30,">",290,300,700,300,(255,255,255))
