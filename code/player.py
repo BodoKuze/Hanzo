@@ -177,7 +177,7 @@ class Player:
             
             self.blit_player(self.image_list,img,self.flip,self.hit_box.x,self.hit_box.y,scroll)
 
-            pygame.draw.rect(self.master,(0,0,0),pygame.rect.Rect(self.hit_box.x-scroll[0], self.hit_box.y-scroll[1], self.hit_box.width,self.hit_box.height),2)
+            
 
 
     def sword_attack(self,scroll):
@@ -206,7 +206,7 @@ class Player:
             if self.flip:
                 self.sword = pygame.rect.Rect(self.hit_box.x-50,self.hit_box.y+10,50,30)
                 
-            pygame.draw.rect(self.master,(0,255,0),pygame.rect.Rect(self.sword.x-scroll[0],self.sword.y-scroll[1],self.sword.width,self.sword.height) ,2)
+            
 
         else:
             self.atk_buffer = 0
